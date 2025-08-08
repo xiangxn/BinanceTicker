@@ -28,13 +28,13 @@ export class BinanceWSClient {
   }
 
   public connect() {
-    console.log(`[WS] Connecting to ${this.url} ${this.options?.proxyUrl ? 'via proxy' : ''}`);
+    console.debug(`[WS] Connecting to ${this.url} ${this.options?.proxyUrl ? 'via proxy' : ''}`);
     const agent = this.options?.proxyUrl ? new HttpsProxyAgent(this.options.proxyUrl) : undefined;
 
     this.ws = new WebSocket(this.url, { agent });
 
     this.ws.on('open', () => {
-      console.log('[WS] Connected');
+      console.debug('[WS] Connected');
       this.lastPong = Date.now();
       this.startHeartbeat();
       this.handlers.onOpen?.();
@@ -83,7 +83,7 @@ export class BinanceWSClient {
     this.reconnectTimeout && clearTimeout(this.reconnectTimeout);
     this.pingInterval && clearInterval(this.pingInterval);
 
-    console.log(`[WS] Reconnecting in ${this.reconnectDelay / 1000}s...`);
+    console.info(`[WS] Reconnecting in ${this.reconnectDelay / 1000}s...`);
     this.reconnectTimeout = setTimeout(() => {
       this.connect();
     }, this.reconnectDelay);
@@ -93,6 +93,6 @@ export class BinanceWSClient {
     this.reconnectTimeout && clearTimeout(this.reconnectTimeout);
     this.pingInterval && clearInterval(this.pingInterval);
     this.ws?.close();
-    console.log('[WS] Closed manually');
+    console.debug('[WS] Closed manually');
   }
 }

@@ -1,3 +1,4 @@
+import "./utils/console"
 import { BinanceWSClient } from './clients/binance-ws-client';
 import { handleTickerData } from './handlers/ticker-handler';
 import { initTelegramBot } from './notifiers/telegram-notifier';
@@ -15,7 +16,7 @@ const wsClient = new BinanceWSClient(
     'wss://fstream.binance.com/ws/!ticker@arr',
     {
         onOpen: () => {
-            console.log('🛰️ Subscribed to all tickers');
+            console.info('🛰️ Subscribed to all tickers');
         },
         onMessage: handleTickerData,
     },
@@ -29,7 +30,7 @@ const wsClient = new BinanceWSClient(
 wsClient.connect();
 
 process.on('SIGINT', () => {
-    console.log('🛑 Shutting down...');
+    console.info('🛑 Shutting down...');
     wsClient.close();
     process.exit(0);
 });
