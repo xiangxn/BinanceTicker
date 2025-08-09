@@ -5,6 +5,7 @@ export interface BinanceTicker {
   l: string; // 24小时内最低成交价
   c: string; // 最新成交价格
   Q: string; // volume 最新成交价格上的成交量
+  q: string; // 24小时内成交额
 }
 
 export interface Candle {

@@ -9,6 +9,7 @@ interface TickerHandlerConfig {
     historyCandlesCount: number;
     magnification: number;
     quoteAsset: string;
+    minTurnover: number;
 }
 
 const defaultConfig: TickerHandlerConfig = {
@@ -16,6 +17,7 @@ const defaultConfig: TickerHandlerConfig = {
     historyCandlesCount: 3,
     magnification: 3,
     quoteAsset: 'USDT',
+    minTurnover: 20000000,   //24小时成交额小于2000万，不关注
 };
 
 const symbolCandles: Map<string, Candle[]> = new Map();
@@ -46,6 +48,17 @@ function getPeriodStart(timestamp: number, period: CandlePeriod): number {
     return date.getTime();
 }
 
+function formatNumberCN(num: number): string {
+    if (num >= 1e8) {
+        // 亿
+        return (num / 1e8).toFixed(2).replace(/\.00$/, '') + '亿';
+    } else if (num >= 1e4) {
+        // 万
+        return (num / 1e4).toFixed(2).replace(/\.00$/, '') + '万';
+    }
+    return num.toFixed(2).replace(/\.00$/, ''); // 小于 1 万保持原值
+}
+
 // 每秒收到数据，更新当前小时的 open/high/low
 export function handleTickerData(data: string) {
     const tickers: BinanceTicker[] = JSON.parse(data);
@@ -58,8 +71,12 @@ export function handleTickerData(data: string) {
         const symbol = ticker.s;
         if (!symbol.endsWith(config.quoteAsset)) return;
 
+        const turnover = parseFloat(ticker.q); //24小时成交额
+        if (turnover < config.minTurnover) return;
+
         const price = parseFloat(ticker.c); // 最新成交价格
         const volume = parseFloat(ticker.Q); // 最新成交价上的成交量
+
         const high = price;
         const low = price;
         const close = price;
@@ -112,13 +129,13 @@ export function handleTickerData(data: string) {
         const now = Date.now();
         const lastCheck = lastCheckTime.get(symbol) || 0;
         if (now - lastCheck >= 60 * 1000) { // 1分钟间隔
-            checkAbnormal(symbol, periodStart);
+            checkAbnormal(symbol, periodStart, turnover);
             lastCheckTime.set(symbol, now);
         }
     });
 }
 
-function checkAbnormal(symbol: string, periodStart: number) {
+function checkAbnormal(symbol: string, periodStart: number, turnover: number) {
     const history = symbolCandles.get(symbol);
     const current = currentCandleState.get(symbol);
     if (!history || history.length < config.historyCandlesCount || !current) return;
@@ -130,8 +147,9 @@ function checkAbnormal(symbol: string, periodStart: number) {
     const direction = (current.close > history.slice(-1)[0].close) ? "🔺" : "🔻"
     const volume = current.volume;
 
-    if (currentAmp >= avgPrevAmp * config.magnification) {  // 震幅大于之前周期2倍以上
-        const msg = `[⚠️ 异常波动] ${symbol} 当前${config.candlePeriod} ${direction} 震幅: ${(currentAmp * 100).toFixed(2)}%, 过去${config.historyCandlesCount}个周期平均 ${(avgPrevAmp * 100).toFixed(2)}%, 成交量: ${volume}`
+    if (currentAmp > 0.0001 && currentAmp >= avgPrevAmp * config.magnification) {  // 震幅大于之前周期2倍以上,且不为0
+        const msg = `[⚠️ 异常波动] ${symbol} 当前${config.candlePeriod} ${direction} 震幅: ${(currentAmp * 100).toFixed(2)}%, 过去${config.historyCandlesCount}个周期平均 ${(avgPrevAmp * 100).toFixed(2)}%, 成交量: ${volume}
+        24小时成交额: ${formatNumberCN(turnover)} `
         console.warn(msg);
         if (!lastRemind.has(symbol) || lastRemind.get(symbol) !== periodStart) {
             lastRemind.set(symbol, periodStart);
