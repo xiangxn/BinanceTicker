@@ -2,7 +2,6 @@ import "../utils/console"
 import { parentPort } from "worker_threads";
 import { BinanceTicker, Candle, CandlePeriod } from "../utils/types";
 import { getPeriodStart } from "../utils/helper";
-import { sendAlert } from "../notifiers/telegram-notifier";
 
 if (!parentPort) throw new Error("Must be run as a Worker");
 parentPort.on("message", (msg) => {
@@ -105,6 +104,9 @@ function checkTrend(symbol: string) {
 
     if (isNonDecreasing || isNonIncreasing) {
         const msg = `⚠️ [${symbol}](https://www.binance.com/zh-CN/futures/${symbol}) 连续${config.successive}个${config.candlePeriod}周期价格${isNonDecreasing ? "🔺" : "🔻"}`
-        sendAlert(msg)
+        parentPort?.postMessage({
+            type: "sendTGMsg",
+            text: msg
+        });
     }
 }

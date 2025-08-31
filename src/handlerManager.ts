@@ -5,10 +5,12 @@ import { join, extname, basename } from "path";
 export class HandlerManager {
     private workers: Worker[] = [];
     private isDev: boolean;
+    private msgHandler: (msg: string) => void;
 
-    constructor(private handlersDir: string) {
+    constructor(private handlersDir: string, msgHandler: (msg: string) => void) {
         // 判断是否开发环境
         this.isDev = process.env.NODE_ENV !== "production";
+        this.msgHandler = msgHandler;
         this.loadHandlers();
     }
 
@@ -38,6 +40,10 @@ export class HandlerManager {
 
             console.info(`[HandlerManager] Loaded handler: ${basename(file)}`);
         }
+        // 注册消息处理函数
+        this.workers.forEach((worker) => {
+            worker.on("message", this.msgHandler);
+        });
     }
 
     /** 广播消息，不收集结果 */

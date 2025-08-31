@@ -1,7 +1,6 @@
 import "../utils/console"
 import { BinanceTicker, CandlePeriod } from '../utils/types';
 import { Candle } from '../utils/types';
-import { sendAlert } from '../notifiers/telegram-notifier';
 import { parentPort } from "worker_threads";
 import { formatNumberCN, getPeriodStart } from "../utils/helper";
 
@@ -129,7 +128,11 @@ function checkAbnormal(symbol: string, periodStart: number, turnover: number) {
         console.warn(msg);
         if (!lastRemind.has(symbol) || lastRemind.get(symbol) !== periodStart) {
             lastRemind.set(symbol, periodStart);
-            sendAlert(msg);
+            // sendAlert(msg);
+            parentPort?.postMessage({
+                type: "sendTGMsg",
+                text: msg
+            });
         }
     } else {
         console.info(`${symbol} 当前${config.candlePeriod}震幅: ${(currentAmp * 100).toFixed(2)}%, 过去平均: ${(avgPrevAmp * 100).toFixed(2)}%`)

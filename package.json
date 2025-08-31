@@ -13,6 +13,7 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "denque": "^2.1.0",
     "dotenv": "^17.2.1",
     "https-proxy-agent": "^7.0.6",
     "node-telegram-bot-api": "^0.66.0",

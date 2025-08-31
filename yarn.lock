@@ -299,6 +299,7 @@ __metadata:
   dependencies:
     "@types/node-telegram-bot-api": "npm:^0"
     "@types/ws": "npm:^8.18.1"
+    denque: "npm:^2.1.0"
     dotenv: "npm:^17.2.1"
     https-proxy-agent: "npm:^7.0.6"
     node-telegram-bot-api: "npm:^0.66.0"
@@ -484,6 +485,13 @@ __metadata:
   version: 1.0.0
   resolution: "delayed-stream@npm:1.0.0"
   checksum: 10c0/d758899da03392e6712f042bec80aa293bbe9e9ff1b2634baae6a360113e708b91326594c8a486d475c69d6259afb7efacdc3537bfcda1c6c648e390ce601b19
+  languageName: node
+  linkType: hard
+
+"denque@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "denque@npm:2.1.0"
+  checksum: 10c0/f9ef81aa0af9c6c614a727cb3bd13c5d7db2af1abf9e6352045b86e85873e629690f6222f4edd49d10e4ccf8f078bbeec0794fafaf61b659c0589d0c511ec363
   languageName: node
   linkType: hard
 

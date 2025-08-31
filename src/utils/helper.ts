@@ -31,3 +31,7 @@ export function formatNumberCN(num: number): string {
     }
     return num.toFixed(2).replace(/\.00$/, ''); // 小于 1 万保持原值
 }
+
+export function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
