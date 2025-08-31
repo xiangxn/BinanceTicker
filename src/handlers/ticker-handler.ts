@@ -15,7 +15,7 @@ interface TickerHandlerConfig {
 const defaultConfig: TickerHandlerConfig = {
     candlePeriod: '5m',
     historyCandlesCount: 3,
-    magnification: 3,
+    magnification: 5,
     quoteAsset: 'USDT',
     minTurnover: 20000000,   //24小时成交额小于2000万，不关注
 };
