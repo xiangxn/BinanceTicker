@@ -123,7 +123,7 @@ function checkAbnormal(symbol: string, periodStart: number, turnover: number) {
     const volume = current.volume;
 
     if (currentAmp > 0.0001 && currentAmp >= avgPrevAmp * config.magnification) {  // 震幅大于之前周期2倍以上,且不为0
-        const msg = `\\[⚠️ 异常波动\\] [${symbol}](https://www.binance.com/zh-CN/futures/${symbol}) 当前${config.candlePeriod} ${direction} 震幅: ${(currentAmp * 100).toFixed(2)}%, 过去${config.historyCandlesCount}个周期平均 ${(avgPrevAmp * 100).toFixed(2)}%, 成交量: ${volume}
+        const msg = `⚠️ 异常波动 [${symbol}](https://www.binance.com/zh-CN/futures/${symbol}) 当前${config.candlePeriod} ${direction} 震幅: ${(currentAmp * 100).toFixed(2)}%, 过去${config.historyCandlesCount}个周期平均 ${(avgPrevAmp * 100).toFixed(2)}%, 成交量: ${volume}
         24小时成交额: ${formatNumberCN(turnover)} `
         console.warn(msg);
         if (!lastRemind.has(symbol) || lastRemind.get(symbol) !== periodStart) {
