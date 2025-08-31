@@ -1,8 +1,15 @@
-import { BinanceTicker } from '../utils/types';
+import "../utils/console"
+import { BinanceTicker, CandlePeriod } from '../utils/types';
 import { Candle } from '../utils/types';
 import { sendAlert } from '../notifiers/telegram-notifier';
+import { parentPort } from "worker_threads";
+import { formatNumberCN, getPeriodStart } from "../utils/helper";
 
-type CandlePeriod = `${number}${'m' | 'h' | 'd'}`;
+if (!parentPort) throw new Error("Must be run as a Worker");
+parentPort.on("message", (msg) => {
+    handleTickerData(msg);
+});
+
 
 interface TickerHandlerConfig {
     candlePeriod: CandlePeriod;
@@ -27,40 +34,9 @@ const lastRemind: Map<string, number> = new Map();
 
 let config: TickerHandlerConfig = defaultConfig;
 
-function getPeriodStart(timestamp: number, period: CandlePeriod): number {
-    const date = new Date(timestamp);
-    const unit = period.charAt(period.length - 1).toLowerCase();
-    const t = parseInt(period.replace(unit, ''));
-    switch (unit) {
-        case 'm':
-            date.setMinutes(Math.floor(date.getMinutes() / t) * t, 0, 0);
-            break;
-        case 'h':
-            date.setHours(Math.floor(date.getHours() / t) * t, 0, 0, 0);
-            break;
-        case 'd':
-            const msPerDay = 86400000;
-            const alignedTime = Math.floor(date.getTime() / (msPerDay * t)) * msPerDay * t;
-            date.setTime(alignedTime)
-            break;
-        default:
-    }
-    return date.getTime();
-}
-
-function formatNumberCN(num: number): string {
-    if (num >= 1e8) {
-        // 亿
-        return (num / 1e8).toFixed(2).replace(/\.00$/, '') + '亿';
-    } else if (num >= 1e4) {
-        // 万
-        return (num / 1e4).toFixed(2).replace(/\.00$/, '') + '万';
-    }
-    return num.toFixed(2).replace(/\.00$/, ''); // 小于 1 万保持原值
-}
 
 // 每秒收到数据，更新当前小时的 open/high/low
-export function handleTickerData(data: string) {
+function handleTickerData(data: string) {
     const tickers: BinanceTicker[] = JSON.parse(data);
     const now = Date.now();
     const periodStart = getPeriodStart(now, config.candlePeriod);
@@ -148,7 +124,7 @@ function checkAbnormal(symbol: string, periodStart: number, turnover: number) {
     const volume = current.volume;
 
     if (currentAmp > 0.0001 && currentAmp >= avgPrevAmp * config.magnification) {  // 震幅大于之前周期2倍以上,且不为0
-        const msg = `[⚠️ 异常波动] ${symbol} 当前${config.candlePeriod} ${direction} 震幅: ${(currentAmp * 100).toFixed(2)}%, 过去${config.historyCandlesCount}个周期平均 ${(avgPrevAmp * 100).toFixed(2)}%, 成交量: ${volume}
+        const msg = `\\[⚠️ 异常波动\\] [${symbol}](https://www.binance.com/zh-CN/futures/${symbol}) 当前${config.candlePeriod} ${direction} 震幅: ${(currentAmp * 100).toFixed(2)}%, 过去${config.historyCandlesCount}个周期平均 ${(avgPrevAmp * 100).toFixed(2)}%, 成交量: ${volume}
         24小时成交额: ${formatNumberCN(turnover)} `
         console.warn(msg);
         if (!lastRemind.has(symbol) || lastRemind.get(symbol) !== periodStart) {

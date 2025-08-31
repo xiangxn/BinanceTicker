@@ -19,23 +19,48 @@ function getCurrentTimestamp(name: string): string {
 }
 
 console.error = (...args) => {
-    originalConsole.error(colors.red, getCurrentTimestamp("ERROR"), ...args, colors.reset);
+    const callerFile = getCallFile();
+    originalConsole.error(colors.red, callerFile, getCurrentTimestamp("ERROR"), ...args, colors.reset);
 };
 
 console.warn = (...args) => {
-    originalConsole.warn(colors.yellow, getCurrentTimestamp("WARN"), ...args, colors.reset);
+    const callerFile = getCallFile();
+    originalConsole.warn(colors.yellow, callerFile, getCurrentTimestamp("WARN"), ...args, colors.reset);
 };
 
 console.info = (...args) => {
-    originalConsole.info(colors.green, getCurrentTimestamp("INFO"), ...args, colors.reset);
+    const callerFile = getCallFile();
+    originalConsole.info(colors.green, callerFile, getCurrentTimestamp("INFO"), ...args, colors.reset);
 };
 
 console.debug = (...args) => {
+    const callerFile = getCallFile();
     if (config.debug)
-        originalConsole.debug(colors.cyan, getCurrentTimestamp("DEBUG"), ...args, colors.reset);
+        originalConsole.debug(colors.cyan, callerFile, getCurrentTimestamp("DEBUG"), ...args, colors.reset);
 }
 
 console.log = (...args) => {
+    const callerFile = getCallFile();
     if (config.debug)
-        originalConsole.log(colors.grey, getCurrentTimestamp("LOG"), ...args, colors.reset);
+        originalConsole.log(colors.grey, callerFile, getCurrentTimestamp("LOG"), ...args, colors.reset);
+}
+
+function getCallFile() {
+    const err = new Error();
+    let callerFile = '';
+
+    // 使用 V8 stack trace API 获取调用栈对象
+    const origPrepareStackTrace = (Error as any).prepareStackTrace;
+    (Error as any).prepareStackTrace = (_: any, stackFrames: NodeJS.CallSite[]) => stackFrames;
+    const stackFrames = err.stack as unknown as NodeJS.CallSite[];
+    (Error as any).prepareStackTrace = origPrepareStackTrace;
+    if (stackFrames && stackFrames.length >= 3) {
+        // 第0行：Error
+        // 第1行：console.info override
+        // 第2行：真正的调用者
+        const frame = stackFrames[2];
+        callerFile = frame.getFileName()?.split('/').pop() || '';
+        callerFile = `[${callerFile}]`;
+    }
+    return callerFile;
 }

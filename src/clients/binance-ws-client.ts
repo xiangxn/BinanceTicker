@@ -1,7 +1,7 @@
 import WebSocket from 'ws';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
-export interface WSHandlers {
+export interface WSHandler {
   onOpen?: () => void;
   onMessage?: (data: string) => void;
 }
@@ -13,7 +13,7 @@ export interface BinanceWSClientOptions {
 export class BinanceWSClient {
   private url: string;
   private ws: WebSocket | null = null;
-  private handlers: WSHandlers;
+  private handlers: WSHandler[];
   private pingInterval: NodeJS.Timeout | null = null;
   private reconnectTimeout: NodeJS.Timeout | null = null;
   private lastPong = Date.now();
@@ -21,9 +21,9 @@ export class BinanceWSClient {
   private heartbeatIntervalMs = 30000;
   private options?: BinanceWSClientOptions;
 
-  constructor(url: string, handlers: WSHandlers, options?: BinanceWSClientOptions) {
+  constructor(url: string, handlers: WSHandler | WSHandler[], options?: BinanceWSClientOptions) {
     this.url = url;
-    this.handlers = handlers;
+    this.handlers = Array.isArray(handlers) ? handlers : [handlers];
     this.options = options;
   }
 
@@ -37,11 +37,11 @@ export class BinanceWSClient {
       console.debug('[WS] Connected');
       this.lastPong = Date.now();
       this.startHeartbeat();
-      this.handlers.onOpen?.();
+      this.handlers.forEach(handler => handler.onOpen?.());
     });
 
     this.ws.on('message', (data: WebSocket.RawData) => {
-      this.handlers.onMessage?.(data.toString());
+      this.handlers.forEach(handler => handler.onMessage?.(data.toString()));
     });
 
     this.ws.on('pong', () => {

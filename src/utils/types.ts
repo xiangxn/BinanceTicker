@@ -16,3 +16,5 @@ export interface Candle {
   close: number;
   volume: number;
 }
+
+export type CandlePeriod = `${number}${'m' | 'h' | 'd'}`;
