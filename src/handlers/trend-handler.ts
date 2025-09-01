@@ -13,13 +13,15 @@ interface TrendHandlerConfig {
     historyCandlesCount: number;
     successive: number;
     quoteAsset: string;
+    minTurnover: number;
 }
 
 const defaultConfig: TrendHandlerConfig = {
     candlePeriod: '1h',
     historyCandlesCount: 5,
     successive: 5,
-    quoteAsset: 'USDT'
+    quoteAsset: 'USDT',
+    minTurnover: 15000000,   //24小时成交额太小的不关注
 };
 
 const symbolCandles: Map<string, Candle[]> = new Map();
@@ -37,6 +39,9 @@ function handleData(data: string) {
     tickers.forEach((ticker) => {
         const symbol = ticker.s;
         if (!symbol.endsWith(config.quoteAsset)) return;
+
+        const turnover = parseFloat(ticker.q); //24小时成交额
+        if (turnover < config.minTurnover) return;
 
         const price = parseFloat(ticker.c); // 最新成交价格
         const volume = parseFloat(ticker.Q); // 最新成交价上的成交量
