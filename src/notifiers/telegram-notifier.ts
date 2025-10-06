@@ -1,13 +1,10 @@
-// src/notifiers/telegram-notifier.ts
 import TelegramBot from 'node-telegram-bot-api';
 import { HttpsProxyAgent } from 'https-proxy-agent';
+import { TGMessage } from '../utils/types';
 
 let bot: TelegramBot;
-let chatId: string;
 
-export function initTelegramBot(token: string, chat_id: string, proxyUrl?: string) {
-    chatId = chat_id;
-
+export function initTelegramBot(token: string, proxyUrl?: string) {
     if (proxyUrl) {
         const agent = new HttpsProxyAgent(proxyUrl);
 
@@ -20,15 +17,22 @@ export function initTelegramBot(token: string, chat_id: string, proxyUrl?: strin
     } else {
         bot = new TelegramBot(token, { polling: false });
     }
+    console.info('[Telegram] Bot 初始化完成');
 }
 
-export function sendAlert(message: string) {
-    if (!bot || !chatId) {
+export async function sendAlert(msg: TGMessage) {
+    if (!bot) {
         console.warn('[Telegram] Bot 未初始化，无法发送');
         return;
     }
-
-    bot.sendMessage(chatId, message, { parse_mode: 'Markdown' }).catch((err) => {
+    let opt = { parse_mode: 'Markdown' } as any
+    if (msg.messageThreadId) {
+        opt['message_thread_id'] = msg.messageThreadId
+    }
+    if (msg.replyToMessageId) {
+        opt['reply_to_message_id'] = msg.replyToMessageId
+    }
+    await bot.sendMessage(msg.chatId, msg.message, opt).catch((err) => {
         console.error('[Telegram] 发送失败：', err.message);
     });
 }
