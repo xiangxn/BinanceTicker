@@ -7,7 +7,6 @@ import { buildTGMessage, findMatchingSubs, loadUserStrategies } from "./strategy
 
 export async function startDispatcherLoop(redis: Redis, mysqlPool: mysql.Pool) {
     console.info("[dispatcher] starting...");
-    // TODO: Periodically refresh sub cache
     // Periodically refresh sub cache
     loadUserStrategies(mysqlPool).catch((e) => console.error("initial UserStrategies error", e));
     setInterval(() => {

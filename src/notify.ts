@@ -27,7 +27,7 @@ export async function notifyWorker(redis: Redis) {
             if (senders.length > 0) {
                 await Promise.all(senders);
             }
-            await sleep(100);
+            await sleep(500);
         } catch (e) {
             console.error(`[notify] error`, e);
             await sleep(1000);
