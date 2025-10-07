@@ -8,7 +8,7 @@ export async function notifyWorker(redis: Redis) {
     console.info(`[notify] starting...`);
     while (true) {
         try {
-            const res = await redis.lpop(config.NOTIFY_QUEUE_KEY, 6);
+            const res = await redis.lpop(config.NOTIFY_QUEUE_KEY, config.NOTIFY_CONCURRENCY_COUNT);
             if (!res) {
                 await sleep(100);
                 continue;

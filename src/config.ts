@@ -21,4 +21,7 @@ export const config = {
 
     // strategy
     SUBS_CACHE_REFRESH_MS: parseInt(process.env.SUBS_CACHE_REFRESH_MS || String(20 * 1000)), // 20s
+
+    // notify
+    NOTIFY_CONCURRENCY_COUNT: parseInt(process.env.NOTIFY_CONCURRENCY_COUNT || String(5)),
 }

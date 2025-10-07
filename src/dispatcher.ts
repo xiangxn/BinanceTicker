@@ -15,20 +15,21 @@ export async function startDispatcherLoop(redis: Redis, mysqlPool: mysql.Pool) {
 
     while (true) {
         try {
-            const entries = await redis.lpop(config.RUST_QUEUE_KEY, 100);
-            if (!entries || entries.length === 0) {
+            const keys = await redis.lpop(config.RUST_QUEUE_KEY, 100);
+            if (!keys || keys.length === 0) {
                 await sleep(1000);
                 continue;
             }
+            const pipeline = redis.pipeline();
+            const entries = await redis.mget(keys)
             for (let entry of entries) {
-                const msg = await redis.get(entry)
-                console.debug(`New event: ${entry} => ${msg}`)
-                if (!msg) {
+                console.debug(`New event: ${entry}`)
+                if (!entry) {
                     continue;
                 }
                 let event: EventMessage;
                 try {
-                    event = JSON.parse(msg) as EventMessage;
+                    event = JSON.parse(entry) as EventMessage;
                 } catch (e) {
                     console.warn(`[dispatcher] invalid event JSON, skipping`, e);
                     continue;
@@ -37,11 +38,12 @@ export async function startDispatcherLoop(redis: Redis, mysqlPool: mysql.Pool) {
                 if (matched.length === 0) {
                     continue;
                 }
-                const notifyJobs = matched.map((strategy) => buildTGMessage(strategy, event));
-                for (const job of notifyJobs) {
-                    await redis.rpush(config.NOTIFY_QUEUE_KEY, JSON.stringify(job));
-                }
+                matched.forEach((strategy) => {
+                    const tgMsg = buildTGMessage(strategy, event);
+                    pipeline.rpush(config.NOTIFY_QUEUE_KEY, JSON.stringify(tgMsg));
+                });
             }
+            await pipeline.exec();
         } catch (err) {
             console.error("[dispatcher] loop error", err);
             // backoff a bit on error to avoid tight loop

@@ -49,7 +49,7 @@ export type VolatilitySpikeParams = {
 }
 
 export type FundingRateValue = {
-  funding_rate: string;
+  funding_rate: string; // 0.0001以上才会监听
   next_funding_time: number;
 }
 export type FundingRateParams = {
