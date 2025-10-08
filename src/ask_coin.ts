@@ -40,7 +40,7 @@ async function askCoin(coin: string) {
             console.debug(`[ask_coin] ask coin ${coin} success: ${message}`)
             if (message) {
                 const msg = filterContent(message)
-                console.log("msg:", msg)
+                console.debug("[ask_coin] filterContent:", msg)
                 return msg
             }
         }
@@ -51,18 +51,10 @@ async function askCoin(coin: string) {
 }
 
 function filterContent(content: string) {
-    const lines = content.split("\n")
-    console.log(lines)
-    const filteredLines = lines.filter(line => {
-        return !line.includes("<xai:tool_")
-            && !line.includes("</xai:tool_")
-            && !line.includes("<argument")
-            && !line.includes("</grok:render")
-            && !line.includes("（总字数：")
-            && !line.includes("（字数：")
-            && !line.includes("了解用户请求")
-            && !line.includes("- ")
-    })
-    console.log(filteredLines)
-    return filteredLines.join("\n")
+    let lines = content.split("\n")
+    lines = lines.slice(5)
+    content = lines.join("\n")
+    content = content.replace(/- [\s\S]*?<\/xai:tool_usage_card>\n?/g, "")
+    lines = content.split("\n")
+    return lines.slice(0, -1).join("\n")
 }
