@@ -56,10 +56,12 @@ function filterContent(content: string) {
     const filteredLines = lines.filter(line => {
         return !line.includes("<xai:tool_")
             && !line.includes("</xai:tool_")
-            && !line.includes("- 接下来")
             && !line.includes("<argument")
             && !line.includes("</grok:render")
             && !line.includes("（总字数：")
+            && !line.includes("（字数：")
+            && !line.includes("了解用户请求")
+            && !line.includes("- ")
     })
     console.log(filteredLines)
     return filteredLines.join("\n")
