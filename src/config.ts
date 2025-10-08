@@ -1,7 +1,7 @@
 export const config = {
     debug: true,
     TG_API_KEY: process.env.TG_API_KEY || '',
-    WS_PROXY: process.env.WS_PROXY || undefined,
+    PROXY: process.env.PROXY || undefined,
 
     // mysql
     MYSQL_HOST: process.env.MYSQL_HOST || 'localhost',
@@ -24,4 +24,8 @@ export const config = {
 
     // notify
     NOTIFY_CONCURRENCY_COUNT: parseInt(process.env.NOTIFY_CONCURRENCY_COUNT || String(5)),
+
+    // ask coin
+    TG_CHAT_ID: "-1002876070327",
+    TG_MESSAGE_THREAD_ID: "15",
 }

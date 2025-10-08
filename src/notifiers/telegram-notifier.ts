@@ -4,7 +4,7 @@ import { TGMessage } from '../utils/types';
 
 let bot: TelegramBot;
 
-export function initTelegramBot(token: string, proxyUrl?: string) {
+export function initTelegramBot(token: string, onMessage?: (message: TelegramBot.Message, metadata: TelegramBot.Metadata) => any, proxyUrl?: string) {
     if (proxyUrl) {
         const agent = new HttpsProxyAgent(proxyUrl);
 
@@ -17,7 +17,11 @@ export function initTelegramBot(token: string, proxyUrl?: string) {
     } else {
         bot = new TelegramBot(token, { polling: false });
     }
+    if (onMessage) {
+        bot.on('message', onMessage);
+    }
     console.info('[Telegram] Bot 初始化完成');
+    return bot
 }
 
 export async function sendAlert(msg: TGMessage) {

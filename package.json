@@ -4,6 +4,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "NODE_ENV=development ts-node src/main.ts",
+    "test": "NODE_ENV=development ts-node tests/test.ts",
     "start": "yarn run build && NODE_ENV=production node dist/main.js"
   },
   "devDependencies": {
@@ -12,6 +13,8 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "agent-twitter-client": "https:/github.com/xiangxn/agent-twitter-client.git",
+    "cycletls": "^2.0.5",
     "dayjs": "^1.11.18",
     "dotenv": "^17.2.1",
     "https-proxy-agent": "^7.0.6",

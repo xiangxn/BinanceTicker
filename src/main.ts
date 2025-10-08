@@ -8,9 +8,11 @@ import Redis from "ioredis";
 import mysql from "mysql2/promise";
 import { notifyWorker } from "./notify";
 import { startDispatcherLoop } from "./dispatcher";
+import { onTGMessage } from './ask_coin';
 
 // ✅ 初始化 Telegram
-initTelegramBot(config.TG_API_KEY, config.WS_PROXY);
+const bot = initTelegramBot(config.TG_API_KEY, onTGMessage, config.PROXY);
+
 
 const mysqlPool = mysql.createPool({
     host: config.MYSQL_HOST,
@@ -47,16 +49,17 @@ process.on("SIGTERM", shutdown);
 async function main() {
     try {
         // test connections
-        await redis.ping();
-        const conn = await mysqlPool.getConnection();
-        conn.release();
+        await redis.ping()
+        const conn = await mysqlPool.getConnection()
+        conn.release()
 
         // kick off dispatcher and notify workers in parallel
-        startDispatcherLoop(redis, mysqlPool).catch((e) => console.error("dispatcher crash", e));
-        notifyWorker(redis).catch((e) => console.error("notify crash", e));
+        startDispatcherLoop(redis, mysqlPool).catch((e) => console.error("dispatcher crash", e))
+        notifyWorker(redis).catch((e) => console.error("notify crash", e))
+        bot.startPolling()
     } catch (e) {
-        console.error("startup error", e);
-        process.exit(1);
+        console.error("startup error", e)
+        process.exit(1)
     }
 }
 main()

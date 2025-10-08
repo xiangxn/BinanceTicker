@@ -85,6 +85,82 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@noble/hashes@npm:1.8.0":
+  version: 1.8.0
+  resolution: "@noble/hashes@npm:1.8.0"
+  checksum: 10c0/06a0b52c81a6fa7f04d67762e08b2c476a00285858150caeaaff4037356dd5e119f45b2a530f638b77a5eeca013168ec1b655db41bae3236cb2e9d511484fc77
+  languageName: node
+  linkType: hard
+
+"@roamhq/wrtc-darwin-arm64@npm:0.8.0":
+  version: 0.8.0
+  resolution: "@roamhq/wrtc-darwin-arm64@npm:0.8.0"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@roamhq/wrtc-darwin-x64@npm:0.8.0":
+  version: 0.8.0
+  resolution: "@roamhq/wrtc-darwin-x64@npm:0.8.0"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@roamhq/wrtc-linux-arm64@npm:0.8.1":
+  version: 0.8.1
+  resolution: "@roamhq/wrtc-linux-arm64@npm:0.8.1"
+  conditions: os=linux & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@roamhq/wrtc-linux-x64@npm:0.8.1":
+  version: 0.8.1
+  resolution: "@roamhq/wrtc-linux-x64@npm:0.8.1"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@roamhq/wrtc-win32-x64@npm:0.8.0":
+  version: 0.8.0
+  resolution: "@roamhq/wrtc-win32-x64@npm:0.8.0"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@roamhq/wrtc@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "@roamhq/wrtc@npm:0.8.0"
+  dependencies:
+    "@roamhq/wrtc-darwin-arm64": "npm:0.8.0"
+    "@roamhq/wrtc-darwin-x64": "npm:0.8.0"
+    "@roamhq/wrtc-linux-arm64": "npm:0.8.1"
+    "@roamhq/wrtc-linux-x64": "npm:0.8.1"
+    "@roamhq/wrtc-win32-x64": "npm:0.8.0"
+    domexception: "npm:^4.0.0"
+  dependenciesMeta:
+    "@roamhq/wrtc-darwin-arm64":
+      optional: true
+    "@roamhq/wrtc-darwin-x64":
+      optional: true
+    "@roamhq/wrtc-linux-arm64":
+      optional: true
+    "@roamhq/wrtc-linux-x64":
+      optional: true
+    "@roamhq/wrtc-win32-x64":
+      optional: true
+    domexception:
+      optional: true
+  checksum: 10c0/ab8e48a16e453aef441e9f078a23a3be0ed3486bfd581f52329bc79024b76518cd4b7728785b244aed8c958b1d0f7d1d517271444701b8648cebf7ac3b076dde
+  languageName: node
+  linkType: hard
+
+"@sinclair/typebox@npm:^0.32.20":
+  version: 0.32.35
+  resolution: "@sinclair/typebox@npm:0.32.35"
+  checksum: 10c0/601b9e7e7bdf67f7b79be95c4eeb97ceace0e1429dd9ce9a78213d61a65b50c14caa46ba0aeed77cd8cfaf61ba13874b69af467ac14d7352844e5cceba1b718d
+  languageName: node
+  linkType: hard
+
 "@tsconfig/node10@npm:^1.0.7":
   version: 1.0.11
   resolution: "@tsconfig/node10@npm:1.0.11"
@@ -139,6 +215,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^20.14.0":
+  version: 20.19.19
+  resolution: "@types/node@npm:20.19.19"
+  dependencies:
+    undici-types: "npm:~6.21.0"
+  checksum: 10c0/488589d6d1d562ad4e8ed9bb36703a8f3bb7feed206bba867358eda0965e781a408f14ed7ff1ca334ae6f6823dcfe2eb2536ffe48e2ab02d47b4c3c5395d274a
+  languageName: node
+  linkType: hard
+
 "@types/request@npm:*":
   version: 2.48.13
   resolution: "@types/request@npm:2.48.13"
@@ -180,6 +265,26 @@ __metadata:
   version: 7.1.4
   resolution: "agent-base@npm:7.1.4"
   checksum: 10c0/c2c9ab7599692d594b6a161559ada307b7a624fa4c7b03e3afdb5a5e31cd0e53269115b620fcab024c5ac6a6f37fa5eb2e004f076ad30f5f7e6b8b671f7b35fe
+  languageName: node
+  linkType: hard
+
+"agent-twitter-client@https:/github.com/xiangxn/agent-twitter-client.git":
+  version: 0.0.18
+  resolution: "agent-twitter-client@https:/github.com/xiangxn/agent-twitter-client.git#commit=6ea24a18d03a2b8e1d73885e0dd4bfbaaec9bd17"
+  dependencies:
+    "@roamhq/wrtc": "npm:^0.8.0"
+    "@sinclair/typebox": "npm:^0.32.20"
+    headers-polyfill: "npm:^3.1.2"
+    json-stable-stringify: "npm:^1.0.2"
+    otpauth: "npm:^9.2.2"
+    readline: "npm:^1.3.0"
+    set-cookie-parser: "npm:^2.6.0"
+    tough-cookie: "npm:^4.1.2"
+    twitter-api-v2: "npm:^1.18.2"
+    undici: "npm:^7.1.1"
+    undici-types: "npm:^7.2.0"
+    ws: "npm:^8.18.0"
+  checksum: 10c0/ad649c49c16337dbd374bac70b5f072ba192dff74f8b2ea19f3b87bcd1c6353e4c48dc35fe7b571b3e0a8b5570078a70213e3862a8ab86e746d7c74045ba8c7c
   languageName: node
   linkType: hard
 
@@ -398,6 +503,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cycletls@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "cycletls@npm:2.0.5"
+  dependencies:
+    "@types/node": "npm:^20.14.0"
+    form-data: "npm:^4.0.0"
+    ws: "npm:^8.17.0"
+  checksum: 10c0/6fa4620b7f2d6731426f5b61b94ba704fd5feb750c2ad019f5799a181624f2aef88d37d6205c1967fe0c8366315bdd45a64d8e8f6c70833e8a2865d297dc0361
+  languageName: node
+  linkType: hard
+
 "dashdash@npm:^1.12.0":
   version: 1.14.1
   resolution: "dashdash@npm:1.14.1"
@@ -508,6 +624,15 @@ __metadata:
   version: 4.0.2
   resolution: "diff@npm:4.0.2"
   checksum: 10c0/81b91f9d39c4eaca068eb0c1eb0e4afbdc5bb2941d197f513dd596b820b956fef43485876226d65d497bebc15666aa2aa82c679e84f65d5f2bfbf14ee46e32c1
+  languageName: node
+  linkType: hard
+
+"domexception@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "domexception@npm:4.0.0"
+  dependencies:
+    webidl-conversions: "npm:^7.0.0"
+  checksum: 10c0/774277cd9d4df033f852196e3c0077a34dbd15a96baa4d166e0e47138a80f4c0bdf0d94e4703e6ff5883cec56bb821a6fff84402d8a498e31de7c87eb932a294
   languageName: node
   linkType: hard
 
@@ -730,7 +855,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"form-data@npm:~4.0.4":
+"form-data@npm:^4.0.0, form-data@npm:~4.0.4":
   version: 4.0.4
   resolution: "form-data@npm:4.0.4"
   dependencies:
@@ -905,6 +1030,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"headers-polyfill@npm:^3.1.2":
+  version: 3.3.0
+  resolution: "headers-polyfill@npm:3.3.0"
+  checksum: 10c0/9123396366bd81dbe8caed83b21f3b174edbfca18e2492ac8d09e30e309cdee01216d45ba2dd302a1654a234f16e9aee049ee7a1cb6c9f059edc10dd4c5b8098
+  languageName: node
+  linkType: hard
+
 "http-signature@npm:~1.4.0":
   version: 1.4.0
   resolution: "http-signature@npm:1.4.0"
@@ -954,8 +1086,8 @@ __metadata:
   linkType: hard
 
 "ioredis@npm:^5.8.0":
-  version: 5.8.0
-  resolution: "ioredis@npm:5.8.0"
+  version: 5.8.1
+  resolution: "ioredis@npm:5.8.1"
   dependencies:
     "@ioredis/commands": "npm:1.4.0"
     cluster-key-slot: "npm:^1.1.0"
@@ -966,7 +1098,7 @@ __metadata:
     redis-errors: "npm:^1.2.0"
     redis-parser: "npm:^3.0.0"
     standard-as-callback: "npm:^2.1.0"
-  checksum: 10c0/66fad6283c6d9052b4aa0987d592c1bf6c9471304eb0edf0c9d18024b1b38028adf29c05f1cf114b90f5bdb516576f897a654946e8c29568f404ac33cd3b9d19
+  checksum: 10c0/4ed66444017150da027bce940a24bf726994691e2a7b3aa11d52f8aeb37f258068cc171af4d9c61247acafc28eb086fa8a7c79420b8e8d2907d2f74f39584465
   languageName: node
   linkType: hard
 
@@ -1220,10 +1352,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json-stable-stringify@npm:^1.0.2":
+  version: 1.3.0
+  resolution: "json-stable-stringify@npm:1.3.0"
+  dependencies:
+    call-bind: "npm:^1.0.8"
+    call-bound: "npm:^1.0.4"
+    isarray: "npm:^2.0.5"
+    jsonify: "npm:^0.0.1"
+    object-keys: "npm:^1.1.1"
+  checksum: 10c0/8b3ff19e4c23c0ad591a49bc3a015d89a538db787d12fe9c4072e1d64d8cfa481f8c37719c629c3d84e848847617bf49f5fee894cf1d25959ab5b67e1c517f31
+  languageName: node
+  linkType: hard
+
 "json-stringify-safe@npm:~5.0.1":
   version: 5.0.1
   resolution: "json-stringify-safe@npm:5.0.1"
   checksum: 10c0/7dbf35cd0411d1d648dceb6d59ce5857ec939e52e4afc37601aa3da611f0987d5cee5b38d58329ceddf3ed48bd7215229c8d52059ab01f2444a338bf24ed0f37
+  languageName: node
+  linkType: hard
+
+"jsonify@npm:^0.0.1":
+  version: 0.0.1
+  resolution: "jsonify@npm:0.0.1"
+  checksum: 10c0/7f5499cdd59a0967ed35bda48b7cec43d850bbc8fb955cdd3a1717bb0efadbe300724d5646de765bb7a99fc1c3ab06eb80d93503c6faaf99b4ff50a3326692f6
   languageName: node
   linkType: hard
 
@@ -1328,8 +1480,8 @@ __metadata:
   linkType: hard
 
 "mysql2@npm:^3.15.1":
-  version: 3.15.1
-  resolution: "mysql2@npm:3.15.1"
+  version: 3.15.2
+  resolution: "mysql2@npm:3.15.2"
   dependencies:
     aws-ssl-profiles: "npm:^1.1.1"
     denque: "npm:^2.1.0"
@@ -1340,7 +1492,7 @@ __metadata:
     named-placeholders: "npm:^1.1.3"
     seq-queue: "npm:^0.0.5"
     sqlstring: "npm:^2.3.2"
-  checksum: 10c0/b40a90fda387a818f36e7fe486b41bfefafc7ee2925c53da761a8e3237fd63ddf72f8c64f8ff4a13abd593e8f72add852d405b5b011fe8b0763f428a2281f3ad
+  checksum: 10c0/7b42d6e9d6bbc447ce3f2a9ac55979a4a240d66ca0a39bbd8422fdf25dbb938e7e9b419b616b8ad1519c53aec51577fad3fe8bd4e70997a91b469fce1ac30b83
   languageName: node
   linkType: hard
 
@@ -1407,6 +1559,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"otpauth@npm:^9.2.2":
+  version: 9.4.1
+  resolution: "otpauth@npm:9.4.1"
+  dependencies:
+    "@noble/hashes": "npm:1.8.0"
+  checksum: 10c0/c49f0f84de648cbf68ec4a0d484eb93e3a8d4ca5104d854ebb4ee98145c214701b634620a5365d5aeb3d76a3c7db2aba014edbdcbe096f6c1513aa17e7d3cfd2
+  languageName: node
+  linkType: hard
+
 "own-keys@npm:^1.0.1":
   version: 1.0.1
   resolution: "own-keys@npm:1.0.1"
@@ -1430,6 +1591,8 @@ __metadata:
   resolution: "perpx@workspace:."
   dependencies:
     "@types/node-telegram-bot-api": "npm:^0"
+    agent-twitter-client: "https:/github.com/xiangxn/agent-twitter-client.git"
+    cycletls: "npm:^2.0.5"
     dayjs: "npm:^1.11.18"
     dotenv: "npm:^17.2.1"
     https-proxy-agent: "npm:^7.0.6"
@@ -1509,6 +1672,13 @@ __metadata:
     string_decoder: "npm:~1.1.1"
     util-deprecate: "npm:~1.0.1"
   checksum: 10c0/7efdb01f3853bc35ac62ea25493567bf588773213f5f4a79f9c365e1ad13bab845ac0dae7bc946270dc40c3929483228415e92a3fc600cc7e4548992f41ee3fa
+  languageName: node
+  linkType: hard
+
+"readline@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "readline@npm:1.3.0"
+  checksum: 10c0/7404c9edc3fd29430221ef1830867c8d87e50612e4ce70f84ecd55686f7db1c81d67c6a4dcb407839f4c459ad05dd34524a2c7a97681e91878367c68d0e38665
   languageName: node
   linkType: hard
 
@@ -1635,6 +1805,13 @@ __metadata:
   version: 0.0.5
   resolution: "seq-queue@npm:0.0.5"
   checksum: 10c0/ec870fc392f0e6e99ec0e551c3041c1a66144d1580efabae7358e572de127b0ad2f844c95a4861d2e6203f836adea4c8196345b37bed55331ead8f22d99ac84c
+  languageName: node
+  linkType: hard
+
+"set-cookie-parser@npm:^2.6.0":
+  version: 2.7.1
+  resolution: "set-cookie-parser@npm:2.7.1"
+  checksum: 10c0/060c198c4c92547ac15988256f445eae523f57f2ceefeccf52d30d75dedf6bff22b9c26f756bd44e8e560d44ff4ab2130b178bd2e52ef5571bf7be3bd7632d9a
   languageName: node
   linkType: hard
 
@@ -1840,7 +2017,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tough-cookie@npm:^4.1.3":
+"tough-cookie@npm:^4.1.2, tough-cookie@npm:^4.1.3":
   version: 4.1.4
   resolution: "tough-cookie@npm:4.1.4"
   dependencies:
@@ -1912,6 +2089,13 @@ __metadata:
   version: 0.14.5
   resolution: "tweetnacl@npm:0.14.5"
   checksum: 10c0/4612772653512c7bc19e61923fbf42903f5e0389ec76a4a1f17195859d114671ea4aa3b734c2029ce7e1fa7e5cc8b80580f67b071ecf0b46b5636d030a0102a2
+  languageName: node
+  linkType: hard
+
+"twitter-api-v2@npm:^1.18.2":
+  version: 1.27.0
+  resolution: "twitter-api-v2@npm:1.27.0"
+  checksum: 10c0/3c3d4c976053ed72afbbf5382fd8b777d1243e2ee738a32bbab13ba0e72699a276b02a493262594ae459ebeadc65de81eba25ce58453a0383b93042ce6815f4e
   languageName: node
   linkType: hard
 
@@ -2000,10 +2184,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"undici-types@npm:^7.2.0":
+  version: 7.16.0
+  resolution: "undici-types@npm:7.16.0"
+  checksum: 10c0/3033e2f2b5c9f1504bdc5934646cb54e37ecaca0f9249c983f7b1fc2e87c6d18399ebb05dc7fd5419e02b2e915f734d872a65da2e3eeed1813951c427d33cc9a
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~6.21.0":
+  version: 6.21.0
+  resolution: "undici-types@npm:6.21.0"
+  checksum: 10c0/c01ed51829b10aa72fc3ce64b747f8e74ae9b60eafa19a7b46ef624403508a54c526ffab06a14a26b3120d055e1104d7abe7c9017e83ced038ea5cf52f8d5e04
+  languageName: node
+  linkType: hard
+
 "undici-types@npm:~7.14.0":
   version: 7.14.0
   resolution: "undici-types@npm:7.14.0"
   checksum: 10c0/e7f3214b45d788f03c51ceb33817be99c65dae203863aa9386b3ccc47201a245a7955fc721fb581da9c888b6ebad59fa3f53405214afec04c455a479908f0f14
+  languageName: node
+  linkType: hard
+
+"undici@npm:^7.1.1":
+  version: 7.16.0
+  resolution: "undici@npm:7.16.0"
+  checksum: 10c0/efd867792e9f233facf9efa0a087e2d9c3e4415c0b234061b9b40307ca4fa01d945fee4d43c7b564e1b80e0d519bcc682f9f6e0de13c717146c00a80e2f1fb0f
   languageName: node
   linkType: hard
 
@@ -2055,6 +2260,13 @@ __metadata:
     core-util-is: "npm:1.0.2"
     extsprintf: "npm:^1.2.0"
   checksum: 10c0/37ccdf8542b5863c525128908ac80f2b476eed36a32cb944de930ca1e2e78584cc435c4b9b4c68d0fc13a47b45ff364b4be43aa74f8804f9050140f660fb660d
+  languageName: node
+  linkType: hard
+
+"webidl-conversions@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "webidl-conversions@npm:7.0.0"
+  checksum: 10c0/228d8cb6d270c23b0720cb2d95c579202db3aaf8f633b4e9dd94ec2000a04e7e6e43b76a94509cdb30479bd00ae253ab2371a2da9f81446cc313f89a4213a2c4
   languageName: node
   linkType: hard
 
@@ -2123,6 +2335,21 @@ __metadata:
   version: 1.0.2
   resolution: "wrappy@npm:1.0.2"
   checksum: 10c0/56fece1a4018c6a6c8e28fbc88c87e0fbf4ea8fd64fc6c63b18f4acc4bd13e0ad2515189786dd2c30d3eec9663d70f4ecf699330002f8ccb547e4a18231fc9f0
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.17.0, ws@npm:^8.18.0":
+  version: 8.18.3
+  resolution: "ws@npm:8.18.3"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10c0/eac918213de265ef7cb3d4ca348b891a51a520d839aa51cdb8ca93d4fa7ff9f6ccb339ccee89e4075324097f0a55157c89fa3f7147bde9d8d7e90335dc087b53
   languageName: node
   linkType: hard
 
