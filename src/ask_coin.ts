@@ -51,10 +51,10 @@ async function askCoin(coin: string) {
 }
 
 function filterContent(content: string) {
+    content = content.replace(/<xai:tool_usage_card>\n?[\s\S]*?<\/xai:tool_usage_card>\n?/g, "")
+    content = content.replace(/<grok:render [\s\S]*?<\/grok:render>\n?/g, "")
     let lines = content.split("\n")
-    lines = lines.slice(5)
+    lines = lines.filter(line => !line.includes("- ") && line !== "\n" && line !== "")
     content = lines.join("\n")
-    content = content.replace(/- [\s\S]*?<\/xai:tool_usage_card>\n?/g, "")
-    lines = content.split("\n")
-    return lines.slice(0, -1).join("\n")
+    return content
 }
