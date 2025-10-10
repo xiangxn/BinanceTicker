@@ -136,7 +136,7 @@ export async function grokChat(content: string) {
         return null
     }
     const chat = await scraper.grokChat({ messages: [{ role: 'user', content }] })
-    console.debug(chat)
+    console.debug("chat:", chat)
     /**
     {
         conversationId: '1975950867204640890',
