@@ -28,4 +28,5 @@ export const config = {
     // ask coin
     TG_CHAT_ID: "-1002876070327",
     TG_MESSAGE_THREAD_ID: "15",
+    TG_ASK_COIN_INTERVAL: 2,   // minute
 }

@@ -29,8 +29,8 @@ export async function onTGMessage(message: TelegramBot.Message, metadata: Telegr
 
 async function askCoin(coin: string) {
     const now = Date.now()
-    if (now - lastAskTime < 5 * 60 * 1000) {
-        return "5分钟内只能问一次"
+    if (now - lastAskTime < config.TG_ASK_COIN_INTERVAL * 60 * 1000) {
+        return `${config.TG_ASK_COIN_INTERVAL}分钟内只能问一次`
     }
     lastAskTime = now
     try {
