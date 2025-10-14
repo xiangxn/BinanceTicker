@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package perpx;
+
+service PerpxService {
+  rpc LoginWithTelegram (TelegramLoginRequest) returns (LoginResponse);
+  rpc GetProfile (ProfileRequest) returns (ProfileResponse);
+}
+
+message TelegramLoginRequest {
+  string init_data = 1;  // Telegram 提供的 initData
+}
+
+message LoginResponse {
+  string token = 1;      // JWT Token
+}
+
+message ProfileRequest {
+  string token = 1;      // JWT Token
+}
+
+message ProfileResponse {
+  string user_id = 1;
+  string username = 2;
+}

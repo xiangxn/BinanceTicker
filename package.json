@@ -3,22 +3,34 @@
   "packageManager": "yarn@4.5.2",
   "scripts": {
     "build": "tsc",
-    "dev": "NODE_ENV=development ts-node src/main.ts",
+    "dev": "yarn run start:envoy:docker & NODE_ENV=development ts-node src/main.ts",
     "test": "NODE_ENV=development ts-node tests/test.ts",
-    "start": "yarn run build && NODE_ENV=production node dist/main.js"
+    "start": "yarn run start:envoy & yarn run start:server",
+    "start:server": "yarn run build && NODE_ENV=production node dist/main.js",
+    "start:envoy": "envoy -c src/rpc/proxy/envoy.yaml",
+    "start:envoy:docker": "docker run --rm --name perpx-envoy -p 8080:8080 -v $(pwd)/src/rpc/proxy/envoy.yaml:/etc/envoy/envoy.yaml envoyproxy/envoy:v1.35.4",
+    "gen": "yarn run clean-proto && yarn run gen-proto",
+    "gen-proto": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:src/rpc/proto --grpc_out=grpc_js:src/rpc/proto --ts_out=grpc_js:src/rpc/proto -I src/rpc/proto src/rpc/proto/*.proto",
+    "clean-proto": "rm -f src/rpc/proto/*_pb.js src/rpc/proto/*_grpc_pb.js src/rpc/proto/*_pb.d.ts"
   },
   "devDependencies": {
+    "@types/google-protobuf": "^3.15.12",
+    "@types/jsonwebtoken": "^9",
     "@types/node-telegram-bot-api": "^0",
+    "grpc-tools": "^1.13.0",
+    "grpc_tools_node_protoc_ts": "^5.3.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@grpc/grpc-js": "^1.14.0",
     "agent-twitter-client": "https:/github.com/xiangxn/agent-twitter-client.git",
     "cycletls": "^2.0.5",
     "dayjs": "^1.11.18",
     "dotenv": "^17.2.1",
     "https-proxy-agent": "^7.0.6",
     "ioredis": "^5.8.0",
+    "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.15.1",
     "node-telegram-bot-api": "^0.66.0"
   }

@@ -1,6 +1,9 @@
 import dotenv from 'dotenv'
 dotenv.config()
 
+import { fork, execSync } from 'child_process';
+import path from 'path';
+
 import "./utils/console"
 import { config } from "./config";
 import { initTelegramBot } from './notifiers/telegram-notifier';
@@ -40,12 +43,25 @@ async function shutdown() {
     } catch (e) {
         console.warn("mysql pool end error", e);
     }
+    // 关闭gRPC进程（如果有）
+    if (serverProcess) {
+        serverProcess.kill();
+    }
+    // 关闭envoy的docker容器
+    // try {
+    //     execSync('docker stop perpx-envoy');
+    //     console.info('Docker container "perpx-envoy" stopped.');
+    // } catch (e) {
+    //     console.warn('Failed to stop Docker container:', e);
+    // }
     process.exit(0);
 }
 
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
 
+// 全局变量保存gRPC进程引用
+let serverProcess: ReturnType<typeof fork> | null = null;
 async function main() {
     try {
         // test connections
@@ -53,10 +69,22 @@ async function main() {
         const conn = await mysqlPool.getConnection()
         conn.release()
 
+        // start gRPC server
+        const rpcfile = process.env.NODE_ENV === 'production' ? 'rpc/server.js' : 'rpc/server.ts'
+        serverProcess = fork(path.join(__dirname, rpcfile));
+        // 监听子进程退出事件
+        serverProcess.on('exit', (code) => {
+            console.info(`gRPC server process exited with code ${code}`);
+        });
+        // 监听子进程错误事件
+        serverProcess.on('error', (err) => {
+            console.error('gRPC server process error:', err);
+        });
+
         // kick off dispatcher and notify workers in parallel
         startDispatcherLoop(redis, mysqlPool).catch((e) => console.error("dispatcher crash", e))
         notifyWorker(redis).catch((e) => console.error("notify crash", e))
-        bot.startPolling()
+        // bot.startPolling()
     } catch (e) {
         console.error("startup error", e)
         process.exit(1)
