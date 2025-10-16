@@ -6,7 +6,4 @@ dist
 datas
 
 # 忽略生成的 gRPC 代码
-src/rpc/proto/*_pb.js
-src/rpc/proto/*_grpc_pb.js
-src/rpc/proto/*_pb.d.ts
-src/rpc/proto/web
+src/rpc/proto/perpx.ts

@@ -63,5 +63,4 @@ export interface UserProfile {
   subscriptionStart?: string;
   subscriptionEnd?: string;
   email?: string;
-  avatar?: string;
 }

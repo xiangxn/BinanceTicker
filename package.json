@@ -2,7 +2,7 @@
   "name": "perpx",
   "packageManager": "yarn@4.5.2",
   "scripts": {
-    "build": "tsc && cp src/rpc/proto/perpx_grpc_pb.js dist/src/rpc/proto/perpx_grpc_pb.js && cp src/rpc/proto/perpx_pb.js dist/src/rpc/proto/perpx_pb.js",
+    "build": "tsc && cp src/rpc/proto/perpx.proto dist/src/rpc/proto/perpx.proto",
     "dev": "yarn run start:envoy:docker & NODE_ENV=development ts-node src/main.ts",
     "test": "NODE_ENV=development ts-node tests/test.ts",
     "start": "yarn run start:envoy:docker & yarn run start:server",
@@ -10,23 +10,18 @@
     "start:envoy": "envoy -c src/rpc/proxy/envoy.yaml",
     "start:envoy:docker": "docker run --rm --name perpx-envoy -p 8080:8080 -v $(pwd)/src/rpc/proxy/envoy.yaml:/etc/envoy/envoy.yaml envoyproxy/envoy:v1.35.4",
     "gen": "yarn run clean-proto && yarn run gen-proto",
-    "gen-proto": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:src/rpc/proto --grpc_out=grpc_js:src/rpc/proto --ts_out=grpc_js:src/rpc/proto -I src/rpc/proto src/rpc/proto/*.proto",
-    "clean-proto": "rm -f src/rpc/proto/*_pb.js src/rpc/proto/*_grpc_pb.js src/rpc/proto/*_pb.d.ts",
-    "gen:web": "protoc --plugin=protoc-gen-grpc-web=./node_modules/.bin/protoc-gen-grpc-web --plugin=protoc-gen-js=./node_modules/.bin/protoc-gen-js --proto_path=src/rpc/proto --js_out=import_style=commonjs:src/rpc/proto/web --grpc-web_out=import_style=typescript,mode=grpcwebtext:src/rpc/proto/web src/rpc/proto/*.proto"
+    "gen-proto": "protoc --plugin=protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=src/rpc/proto --ts_proto_opt=esModuleInterop=true,forceLong=long,useOptionals=messages -I src/rpc/proto src/rpc/proto/*.proto"
   },
   "devDependencies": {
-    "@types/google-protobuf": "^3.15.12",
     "@types/jsonwebtoken": "^9",
     "@types/node-telegram-bot-api": "^0",
-    "grpc-tools": "^1.13.0",
-    "grpc_tools_node_protoc_ts": "^5.3.3",
-    "protoc-gen-grpc-web": "^1.5.0",
-    "protoc-gen-js": "^3.21.4-4",
     "ts-node": "^10.9.2",
+    "ts-proto": "^2.7.7",
     "typescript": "^5.9.2"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.14.0",
+    "@grpc/proto-loader": "^0.8.0",
     "agent-twitter-client": "https:/github.com/xiangxn/agent-twitter-client.git",
     "cycletls": "^2.0.5",
     "dayjs": "^1.11.18",

@@ -3,9 +3,10 @@ import * as jwt from 'jsonwebtoken';
 import * as crypto from 'crypto';
 import { config } from "../config";
 import "../utils/console"
-import { PerpxServiceService } from "./proto/perpx_grpc_pb";
+import * as protoLoader from '@grpc/proto-loader';
 import mysql from "mysql2/promise";
 import { User } from '../db/user';
+import path from 'path';
 
 // 验证 Telegram initData
 function validateTelegramInitData(initData: string): boolean {
@@ -33,9 +34,20 @@ const mysqlPool = mysql.createPool({
     connectionLimit: 10,
 });
 
+// 加载proto
+const PROTO_PATH = "../../src/rpc/proto/perpx.proto";
+const packageDef = protoLoader.loadSync(path.join(__dirname, PROTO_PATH), {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true,
+});
+const grpcObj = grpc.loadPackageDefinition(packageDef) as any;
+
 // 实现 gRPC 服务
 const server = new grpc.Server();
-server.addService(PerpxServiceService, {
+server.addService(grpcObj.perpx.PerpxService.service, {
     loginWithTelegram: async (call: any, callback: any) => {
         const { init_data } = call.request;
         if (!validateTelegramInitData(init_data)) {
