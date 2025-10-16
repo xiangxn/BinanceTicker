@@ -1,5 +1,5 @@
 import mysql from "mysql2/promise";
-import { UserProfile } from "../utils/types";
+import { ProfileResponse } from "../rpc/proto/perpx";
 
 export class User {
     private mysql: mysql.Pool
@@ -15,7 +15,7 @@ FROM users AS u
 LEFT JOIN subscriptions AS s ON u.id = s.user_id
 WHERE u.tg_id = ?`;
         const [rows] = await this.mysql.query(sql, [tgId]);
-        return (rows as any[])[0] as UserProfile ?? null;
+        return (rows as any[])[0] as ProfileResponse ?? null;
     }
 
     async addUser(tgId: string, tgName: string, email?: string) {
