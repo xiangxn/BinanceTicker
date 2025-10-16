@@ -81,9 +81,11 @@ async function main() {
             console.error('gRPC server process error:', err);
         });
 
-        // kick off dispatcher and notify workers in parallel
+        // 根据事件匹配生成通知消息
         startDispatcherLoop(redis, mysqlPool).catch((e) => console.error("dispatcher crash", e))
+        // 推送通知消息
         notifyWorker(redis).catch((e) => console.error("notify crash", e))
+        // 启动TG处理ask coin
         // bot.startPolling()
     } catch (e) {
         console.error("startup error", e)
