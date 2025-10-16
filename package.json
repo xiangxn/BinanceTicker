@@ -2,7 +2,7 @@
   "name": "perpx",
   "packageManager": "yarn@4.5.2",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp src/rpc/proto/perpx_grpc_pb.js dist/src/rpc/proto/perpx_grpc_pb.js && cp src/rpc/proto/perpx_pb.js dist/src/rpc/proto/perpx_pb.js",
     "dev": "yarn run start:envoy:docker & NODE_ENV=development ts-node src/main.ts",
     "test": "NODE_ENV=development ts-node tests/test.ts",
     "start": "yarn run start:envoy:docker & yarn run start:server",
