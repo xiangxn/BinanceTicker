@@ -55,3 +55,13 @@ export type FundingRateValue = {
 export type FundingRateParams = {
   fundingRate: string;
 }
+export interface UserProfile {
+  telegramId: string;
+  telegramName: string;
+  maxStrategies: number;
+  active: boolean;
+  subscriptionStart?: string;
+  subscriptionEnd?: string;
+  email?: string;
+  avatar?: string;
+}

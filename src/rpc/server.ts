@@ -4,6 +4,8 @@ import * as crypto from 'crypto';
 import { config } from "../config";
 import "../utils/console"
 import { PerpxServiceService } from "./proto/perpx_grpc_pb";
+import mysql from "mysql2/promise";
+import { User } from '../db/user';
 
 // 验证 Telegram initData
 function validateTelegramInitData(initData: string): boolean {
@@ -21,10 +23,20 @@ function validateTelegramInitData(initData: string): boolean {
     return computedHash === hash;
 }
 
+// 初始化数据库
+const mysqlPool = mysql.createPool({
+    host: config.MYSQL_HOST,
+    port: config.MYSQL_PORT,
+    user: config.MYSQL_USER,
+    password: config.MYSQL_PASS,
+    database: config.MYSQL_DB,
+    connectionLimit: 10,
+});
+
 // 实现 gRPC 服务
 const server = new grpc.Server();
 server.addService(PerpxServiceService, {
-    loginWithTelegram: (call: any, callback: any) => {
+    loginWithTelegram: async (call: any, callback: any) => {
         const { init_data } = call.request;
         if (!validateTelegramInitData(init_data)) {
             callback({ code: grpc.status.UNAUTHENTICATED, message: 'Invalid Telegram initData' });
@@ -33,14 +45,20 @@ server.addService(PerpxServiceService, {
 
         const params = new URLSearchParams(init_data);
         const user = JSON.parse(params.get('user')!);
-        const token = jwt.sign({ user_id: user.id }, config.JWT_SECRET, { expiresIn: '1h' });
+        await new User(mysqlPool).addUser(user.id, user.username)
+        const token = jwt.sign({ user_id: user.id }, config.JWT_SECRET, { expiresIn: '24h' });
         callback(null, { token });
     },
-    getProfile: (call: any, callback: any) => {
+    getProfile: async (call: any, callback: any) => {
         const { token } = call.request;
         try {
             const decoded = jwt.verify(token, config.JWT_SECRET) as { user_id: string };
-            callback(null, { user_id: decoded.user_id, username: `user_${decoded.user_id}` });
+            const user = await new User(mysqlPool).getUser(decoded.user_id)
+            if (!user) {
+                callback({ code: grpc.status.INVALID_ARGUMENT, message: 'User does not exist' });
+            } else {
+                callback(null, user);
+            }
         } catch (err) {
             callback({ code: grpc.status.UNAUTHENTICATED, message: 'Invalid JWT' });
         }
