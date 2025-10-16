@@ -9,7 +9,7 @@
     "start:server": "yarn run build && NODE_ENV=production node dist/src/main.js",
     "start:envoy": "envoy -c src/rpc/proxy/envoy.yaml",
     "start:envoy:docker": "docker run --rm --name perpx-envoy -p 8080:8080 -v $(pwd)/src/rpc/proxy/envoy.yaml:/etc/envoy/envoy.yaml envoyproxy/envoy:v1.35.4",
-    "gen": "yarn run clean-proto && yarn run gen-proto",
+    "gen": "yarn run gen-proto",
     "gen-proto": "protoc --plugin=protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=src/rpc/proto --ts_proto_opt=esModuleInterop=true,forceLong=long,useOptionals=messages -I src/rpc/proto src/rpc/proto/*.proto"
   },
   "devDependencies": {
