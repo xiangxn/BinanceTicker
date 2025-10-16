@@ -2,6 +2,15 @@
 
 ## 安装工具链
 
+### 安装protoc
+```
+brew install protobuf
+```
+或者
+```
+apt install protobuf-compiler
+```
+
 ### 安装gRPC代理 envoy
 ```
 brew install envoy
