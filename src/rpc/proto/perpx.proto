@@ -3,8 +3,8 @@ syntax = "proto3";
 package perpx;
 
 service PerpxService {
-  rpc LoginWithTelegram (TelegramLoginRequest) returns (LoginResponse);
-  rpc GetProfile (ProfileRequest) returns (ProfileResponse);
+  rpc loginWithTelegram (TelegramLoginRequest) returns (LoginResponse);
+  rpc getProfile (ProfileRequest) returns (ProfileResponse);
 }
 
 message TelegramLoginRequest {

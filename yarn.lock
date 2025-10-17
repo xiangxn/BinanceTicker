@@ -85,6 +85,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@improbable-eng/grpc-web@npm:^0.15.0":
+  version: 0.15.0
+  resolution: "@improbable-eng/grpc-web@npm:0.15.0"
+  dependencies:
+    browser-headers: "npm:^0.4.1"
+  peerDependencies:
+    google-protobuf: ^3.14.0
+  checksum: 10c0/98949a73bf98a54e5df02a3a13e3dadad83a610a35ed57600e566a842777e02bec71de413e42a7728267a38c5ccf30af67fe516486e68546c2701e95d2446f5c
+  languageName: node
+  linkType: hard
+
 "@ioredis/commands@npm:1.4.0":
   version: 1.4.0
   resolution: "@ioredis/commands@npm:1.4.0"
@@ -577,6 +588,13 @@ __metadata:
   version: 3.7.2
   resolution: "bluebird@npm:3.7.2"
   checksum: 10c0/680de03adc54ff925eaa6c7bb9a47a0690e8b5de60f4792604aae8ed618c65e6b63a7893b57ca924beaf53eee69c5af4f8314148c08124c550fe1df1add897d2
+  languageName: node
+  linkType: hard
+
+"browser-headers@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "browser-headers@npm:0.4.1"
+  checksum: 10c0/3b08864bb955b295ab3dd6ab775c7798096c2e85486571803b4070ec484de83ccceebe531a8b00d5daf4463fada5e7ca18cd1a71cc1ee0dfdbab705332318cef
   languageName: node
   linkType: hard
 
@@ -1936,9 +1954,11 @@ __metadata:
   dependencies:
     "@grpc/grpc-js": "npm:^1.14.0"
     "@grpc/proto-loader": "npm:^0.8.0"
+    "@improbable-eng/grpc-web": "npm:^0.15.0"
     "@types/jsonwebtoken": "npm:^9"
     "@types/node-telegram-bot-api": "npm:^0"
     agent-twitter-client: "https:/github.com/xiangxn/agent-twitter-client.git"
+    browser-headers: "npm:^0.4.1"
     cycletls: "npm:^2.0.5"
     dayjs: "npm:^1.11.18"
     dotenv: "npm:^17.2.1"

@@ -4,6 +4,3 @@ node_modules
 dist
 .vscode
 datas
-
-# 忽略生成的 gRPC 代码
-src/rpc/proto/perpx.ts
