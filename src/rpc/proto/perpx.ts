@@ -28,7 +28,7 @@ export interface ProfileRequest {
 }
 
 export interface ProfileResponse {
-  telegramId: string;
+  telegramId: number;
   telegramName: string;
   maxStrategies: number;
   active: boolean;
@@ -213,7 +213,7 @@ export const ProfileRequest: MessageFns<ProfileRequest> = {
 
 function createBaseProfileResponse(): ProfileResponse {
   return {
-    telegramId: "",
+    telegramId: 0,
     telegramName: "",
     maxStrategies: 0,
     active: false,
@@ -225,8 +225,8 @@ function createBaseProfileResponse(): ProfileResponse {
 
 export const ProfileResponse: MessageFns<ProfileResponse> = {
   encode(message: ProfileResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.telegramId !== "") {
-      writer.uint32(10).string(message.telegramId);
+    if (message.telegramId !== 0) {
+      writer.uint32(8).int32(message.telegramId);
     }
     if (message.telegramName !== "") {
       writer.uint32(18).string(message.telegramName);
@@ -257,11 +257,11 @@ export const ProfileResponse: MessageFns<ProfileResponse> = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1: {
-          if (tag !== 10) {
+          if (tag !== 8) {
             break;
           }
 
-          message.telegramId = reader.string();
+          message.telegramId = reader.int32();
           continue;
         }
         case 2: {
@@ -323,7 +323,7 @@ export const ProfileResponse: MessageFns<ProfileResponse> = {
 
   fromJSON(object: any): ProfileResponse {
     return {
-      telegramId: isSet(object.telegramId) ? globalThis.String(object.telegramId) : "",
+      telegramId: isSet(object.telegramId) ? globalThis.Number(object.telegramId) : 0,
       telegramName: isSet(object.telegramName) ? globalThis.String(object.telegramName) : "",
       maxStrategies: isSet(object.maxStrategies) ? globalThis.Number(object.maxStrategies) : 0,
       active: isSet(object.active) ? globalThis.Boolean(object.active) : false,
@@ -335,8 +335,8 @@ export const ProfileResponse: MessageFns<ProfileResponse> = {
 
   toJSON(message: ProfileResponse): unknown {
     const obj: any = {};
-    if (message.telegramId !== "") {
-      obj.telegramId = message.telegramId;
+    if (message.telegramId !== 0) {
+      obj.telegramId = Math.round(message.telegramId);
     }
     if (message.telegramName !== "") {
       obj.telegramName = message.telegramName;
@@ -364,7 +364,7 @@ export const ProfileResponse: MessageFns<ProfileResponse> = {
   },
   fromPartial<I extends Exact<DeepPartial<ProfileResponse>, I>>(object: I): ProfileResponse {
     const message = createBaseProfileResponse();
-    message.telegramId = object.telegramId ?? "";
+    message.telegramId = object.telegramId ?? 0;
     message.telegramName = object.telegramName ?? "";
     message.maxStrategies = object.maxStrategies ?? 0;
     message.active = object.active ?? false;

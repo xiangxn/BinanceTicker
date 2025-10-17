@@ -8,7 +8,7 @@
     "start": "yarn run start:envoy:docker & yarn run start:server",
     "start:server": "yarn run build && NODE_ENV=production node dist/src/main.js",
     "start:envoy": "envoy -c src/rpc/proxy/envoy.yaml",
-    "start:envoy:docker": "docker run --rm --name perpx-envoy -p 8080:8080 -v $(pwd)/src/rpc/proxy/envoy.yaml:/etc/envoy/envoy.yaml envoyproxy/envoy:v1.35.4",
+    "start:envoy:docker": "docker run --rm --name perpx-envoy --add-host=host.docker.internal:host-gateway -p 8080:8080 -v $(pwd)/src/rpc/proxy/envoy.yaml:/etc/envoy/envoy.yaml envoyproxy/envoy:v1.35.4",
     "gen": "protoc --plugin=protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=src/rpc/proto --ts_proto_opt=outputClientImpl=grpc-web,addGrpcMetadata=true,esModuleInterop=true,forceLong=long,useOptionals=messages -I src/rpc/proto src/rpc/proto/*.proto"
   },
   "devDependencies": {

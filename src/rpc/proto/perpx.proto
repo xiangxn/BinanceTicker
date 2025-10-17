@@ -20,7 +20,7 @@ message ProfileRequest {
 }
 
 message ProfileResponse {
-  string telegram_id = 1;
+  int32 telegram_id = 1;
   string telegram_name = 2;
   int32 max_strategies = 3;
   bool active = 4;

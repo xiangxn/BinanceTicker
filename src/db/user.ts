@@ -15,14 +15,14 @@ FROM users AS u
 LEFT JOIN subscriptions AS s ON u.id = s.user_id
 WHERE u.tg_id = ?`;
         const [rows] = await this.mysql.query(sql, [tgId]);
-        return (rows as any[])[0] as ProfileResponse ?? null;
+        return (rows as any[])[0] ?? null;
     }
 
-    async addUser(tgId: string, tgName: string, email?: string) {
-        const sql = `INSERT INTO users (tg_id,tg_name,email)
-VALUES (?,?,?)
+    async addUser(tgId: string, tgName: string) {
+        const sql = `INSERT INTO users (tg_id,tg_name)
+VALUES (?,?)
 ON DUPLICATE KEY UPDATE tg_id = tg_id;`
-        const [result] = await this.mysql.execute<mysql.ResultSetHeader>(sql, [tgId, tgName, email])
+        const [result] = await this.mysql.execute<mysql.ResultSetHeader>(sql, [tgId, tgName])
         return result.affectedRows > 0
     }
 }
