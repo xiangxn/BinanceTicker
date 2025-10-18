@@ -15,6 +15,7 @@ function validateTelegramInitData(initData: string): boolean {
     const params = new URLSearchParams(initData);
     const hash = params.get('hash');
     params.delete('hash');
+    params.delete('signature');
 
     const dataToCheck = Array.from(params.entries())
         .sort(([a], [b]) => a.localeCompare(b))
