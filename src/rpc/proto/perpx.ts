@@ -35,6 +35,7 @@ export interface ProfileResponse {
   subscriptionStart?: string | undefined;
   subscriptionEnd?: string | undefined;
   email?: string | undefined;
+  avatar?: string | undefined;
 }
 
 function createBaseTelegramLoginRequest(): TelegramLoginRequest {
@@ -220,6 +221,7 @@ function createBaseProfileResponse(): ProfileResponse {
     subscriptionStart: undefined,
     subscriptionEnd: undefined,
     email: undefined,
+    avatar: undefined,
   };
 }
 
@@ -245,6 +247,9 @@ export const ProfileResponse: MessageFns<ProfileResponse> = {
     }
     if (message.email !== undefined) {
       writer.uint32(58).string(message.email);
+    }
+    if (message.avatar !== undefined) {
+      writer.uint32(66).string(message.avatar);
     }
     return writer;
   },
@@ -312,6 +317,14 @@ export const ProfileResponse: MessageFns<ProfileResponse> = {
           message.email = reader.string();
           continue;
         }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.avatar = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -330,6 +343,7 @@ export const ProfileResponse: MessageFns<ProfileResponse> = {
       subscriptionStart: isSet(object.subscriptionStart) ? globalThis.String(object.subscriptionStart) : undefined,
       subscriptionEnd: isSet(object.subscriptionEnd) ? globalThis.String(object.subscriptionEnd) : undefined,
       email: isSet(object.email) ? globalThis.String(object.email) : undefined,
+      avatar: isSet(object.avatar) ? globalThis.String(object.avatar) : undefined,
     };
   },
 
@@ -356,6 +370,9 @@ export const ProfileResponse: MessageFns<ProfileResponse> = {
     if (message.email !== undefined) {
       obj.email = message.email;
     }
+    if (message.avatar !== undefined) {
+      obj.avatar = message.avatar;
+    }
     return obj;
   },
 
@@ -371,6 +388,7 @@ export const ProfileResponse: MessageFns<ProfileResponse> = {
     message.subscriptionStart = object.subscriptionStart ?? undefined;
     message.subscriptionEnd = object.subscriptionEnd ?? undefined;
     message.email = object.email ?? undefined;
+    message.avatar = object.avatar ?? undefined;
     return message;
   },
 };

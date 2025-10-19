@@ -71,6 +71,7 @@ CREATE TABLE `users` (
   `tg_id` BIGINT UNIQUE COMMENT 'TG 登录 ID 或用户标识',
   `tg_name` VARCHAR(255) COMMENT 'TG 用户名',
   `email` VARCHAR(255) COMMENT '用户邮箱',
+  `avatar` VARCHAR(255) COMMENT '用户头像',
   `tg_chat_id` VARCHAR(255) COMMENT '用于发送消息到用户的聊天ID',
   `tg_thread_id` VARCHAR(255) COMMENT '群组话题ID,可为空',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

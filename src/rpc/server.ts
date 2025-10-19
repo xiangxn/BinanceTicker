@@ -46,7 +46,7 @@ server.addService(grpcObj.perpx.PerpxService.service, {
 
         const params = new URLSearchParams(initData);
         const user = JSON.parse(params.get('user')!);
-        await new User(mysqlPool).addUser(user.id, user.username)
+        await new User(mysqlPool).addUser(user.id, user.username, user.photo_url)
         const token = jwt.sign({ user_id: user.id }, config.JWT_SECRET, { expiresIn: '24h' });
         console.debug("token:", token)
         callback(null, { token });

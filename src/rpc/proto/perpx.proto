@@ -27,4 +27,5 @@ message ProfileResponse {
   optional string subscription_start = 5;
   optional string subscription_end = 6;
   optional string email = 7;
+  optional string avatar = 8;
 }
