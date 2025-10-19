@@ -86,7 +86,7 @@ async function main() {
         // 推送通知消息
         notifyWorker(redis).catch((e) => console.error("notify crash", e))
         // 启动TG处理ask coin
-        // bot.startPolling()
+        bot.startPolling()
     } catch (e) {
         console.error("startup error", e)
         process.exit(1)
