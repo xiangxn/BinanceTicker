@@ -283,6 +283,49 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tma.js/init-data-node@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "@tma.js/init-data-node@npm:2.0.3"
+  dependencies:
+    "@tma.js/toolkit": "npm:^1.0.2"
+    "@tma.js/transformers": "npm:^1.1.1"
+    "@tma.js/types": "npm:^1.0.2"
+    better-promises: "npm:^1.0.0"
+    error-kid: "npm:^1.0.2"
+    fp-ts: "npm:^2.16.11"
+  checksum: 10c0/f4ce23f700322a72dd89241ab201c8b65bf3ad725f4330d6ec1207015891a73067d70eb696ceafce8bb503b41e0d9202006fdf594e82d3bb61de87ee49ba4ed9
+  languageName: node
+  linkType: hard
+
+"@tma.js/toolkit@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@tma.js/toolkit@npm:1.0.2"
+  dependencies:
+    better-promises: "npm:^1.0.0"
+    fp-ts: "npm:^2.16.11"
+  checksum: 10c0/dc7d053874b5ee814d1cf1f159ebb8f96317c6b3b5735390e0e52105cce50026f5fbf1204d2c9535be8bd9ce5bf59da608b24bb3f1f428bbe53c9c0bd4986e7b
+  languageName: node
+  linkType: hard
+
+"@tma.js/transformers@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@tma.js/transformers@npm:1.1.1"
+  dependencies:
+    "@tma.js/toolkit": "npm:^1.0.2"
+    "@tma.js/types": "npm:^1.0.2"
+    fp-ts: "npm:^2.16.11"
+    valibot: "npm:^1.1.0"
+  checksum: 10c0/4a73bd56195942c3cd49860907eacfbd38bd4ca0cdce57d343d47c6be63b9476a06b12f6053a21a72f2532007e1123487425ed49df4e3720ef66fa636c7b4bd7
+  languageName: node
+  linkType: hard
+
+"@tma.js/types@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@tma.js/types@npm:1.0.2"
+  checksum: 10c0/445ae52f20b931f316606344ad09d874d67d652028fdfe469c8b5dc57929ca0a9a31b9bb0474eb29f4bbdaa6596be66250379b38f3ae6e31ec3eabb2ad217694
+  languageName: node
+  linkType: hard
+
 "@tsconfig/node10@npm:^1.0.7":
   version: 1.0.11
   resolution: "@tsconfig/node10@npm:1.0.11"
@@ -571,6 +614,15 @@ __metadata:
   dependencies:
     tweetnacl: "npm:^0.14.3"
   checksum: 10c0/ddfe85230b32df25aeebfdccfbc61d3bc493ace49c884c9c68575de1f5dcf733a5d7de9def3b0f318b786616b8d85bad50a28b1da1750c43e0012c93badcc148
+  languageName: node
+  linkType: hard
+
+"better-promises@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "better-promises@npm:1.0.0"
+  dependencies:
+    error-kid: "npm:^1.0.1"
+  checksum: 10c0/868d71bf3a4e11558396817922d338abb3c5240fb048953589a4e08e4673a22151b6e397a28ed989f4a7e40ada18339c2940bad1012d124bfd948983ddef98b7
   languageName: node
   linkType: hard
 
@@ -919,6 +971,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"error-kid@npm:^1.0.1, error-kid@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "error-kid@npm:1.0.2"
+  checksum: 10c0/28863bae9a2d89664edb446be2ea7fd4bfb94f4229bbd95613c4a221d002701f197534cc3e485936408b8f7fb9cfdf953d914afbd69df78c1cc14b6a257bc6ba
+  languageName: node
+  linkType: hard
+
 "es-abstract@npm:^1.23.5, es-abstract@npm:^1.23.6, es-abstract@npm:^1.23.9":
   version: 1.24.0
   resolution: "es-abstract@npm:1.24.0"
@@ -1118,6 +1177,13 @@ __metadata:
     hasown: "npm:^2.0.2"
     mime-types: "npm:^2.1.12"
   checksum: 10c0/373525a9a034b9d57073e55eab79e501a714ffac02e7a9b01be1c820780652b16e4101819785e1e18f8d98f0aee866cc654d660a435c378e16a72f2e7cac9695
+  languageName: node
+  linkType: hard
+
+"fp-ts@npm:^2.16.11":
+  version: 2.16.11
+  resolution: "fp-ts@npm:2.16.11"
+  checksum: 10c0/9a263a577964adbb754221c48449a64a6962c91fa6af136e73b043ee70ee41c7b856fe1e6cc21fb4f0264dd9a75c53bd381b1bb486b6caa99a71f33d1bb24c2a
   languageName: node
   linkType: hard
 
@@ -1955,6 +2021,7 @@ __metadata:
     "@grpc/grpc-js": "npm:^1.14.0"
     "@grpc/proto-loader": "npm:^0.8.0"
     "@improbable-eng/grpc-web": "npm:^0.15.0"
+    "@tma.js/init-data-node": "npm:^2.0.3"
     "@types/jsonwebtoken": "npm:^9"
     "@types/node-telegram-bot-api": "npm:^0"
     agent-twitter-client: "https:/github.com/xiangxn/agent-twitter-client.git"
@@ -2706,6 +2773,18 @@ __metadata:
   version: 3.0.1
   resolution: "v8-compile-cache-lib@npm:3.0.1"
   checksum: 10c0/bdc36fb8095d3b41df197f5fb6f11e3a26adf4059df3213e3baa93810d8f0cc76f9a74aaefc18b73e91fe7e19154ed6f134eda6fded2e0f1c8d2272ed2d2d391
+  languageName: node
+  linkType: hard
+
+"valibot@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "valibot@npm:1.1.0"
+  peerDependencies:
+    typescript: ">=5"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/39580b4e4683cc44398fb775e88c03639dbaa7e6f587df416125916cb6307292d45df18f656054e8846093ced13a2d2fdc98659da6dd104d1d20180edcbd99d4
   languageName: node
   linkType: hard
 

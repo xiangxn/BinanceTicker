@@ -4,7 +4,7 @@
   "scripts": {
     "build": "tsc && cp src/rpc/proto/perpx.proto dist/src/rpc/proto/perpx.proto",
     "dev": "yarn run start:envoy:docker & NODE_ENV=development ts-node src/main.ts",
-    "test": "NODE_ENV=development ts-node tests/test.ts",
+    "test": "NODE_ENV=development ts-node tests/hash.ts",
     "start": "yarn run start:envoy:docker & yarn run start:server",
     "start:server": "yarn run build && NODE_ENV=production node dist/src/main.js",
     "start:envoy": "envoy -c src/rpc/proxy/envoy.yaml",
@@ -23,6 +23,7 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.14.0",
     "@grpc/proto-loader": "^0.8.0",
+    "@tma.js/init-data-node": "^2.0.3",
     "agent-twitter-client": "https:/github.com/xiangxn/agent-twitter-client.git",
     "cycletls": "^2.0.5",
     "dayjs": "^1.11.18",

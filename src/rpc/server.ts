@@ -1,6 +1,8 @@
+import dotenv from 'dotenv'
+dotenv.config()
+
 import * as grpc from '@grpc/grpc-js';
 import * as jwt from 'jsonwebtoken';
-import * as crypto from 'crypto';
 import "../utils/console"
 import { config } from "../config";
 import * as protoLoader from '@grpc/proto-loader';
@@ -8,25 +10,8 @@ import mysql from "mysql2/promise";
 import { User } from '../db/user';
 import path from 'path';
 import { ProfileResponse } from './proto/perpx';
+import { isValid } from '@tma.js/init-data-node';
 
-// 验证 Telegram initData
-function validateTelegramInitData(initData: string): boolean {
-    console.debug("initData:", initData)
-    const params = new URLSearchParams(initData);
-    const hash = params.get('hash');
-    params.delete('hash');
-    params.delete('signature');
-
-    const dataToCheck = Array.from(params.entries())
-        .sort(([a], [b]) => a.localeCompare(b))
-        .map(([key, value]) => `${key}=${value}`)
-        .join('\n');
-
-    const secret = crypto.createHmac('sha256', config.TG_API_KEY).update('WebAppData').digest();
-    const computedHash = crypto.createHmac('sha256', secret).update(dataToCheck).digest('hex');
-    console.debug("computedHash:", computedHash, hash)
-    return computedHash === hash;
-}
 
 // 初始化数据库
 const mysqlPool = mysql.createPool({
@@ -54,7 +39,7 @@ const server = new grpc.Server();
 server.addService(grpcObj.perpx.PerpxService.service, {
     loginWithTelegram: async (call: any, callback: any) => {
         const { initData } = call.request;
-        if (!validateTelegramInitData(initData)) {
+        if (!isValid(initData, config.TG_API_KEY)) {
             callback({ code: grpc.status.UNAUTHENTICATED, message: 'Invalid Telegram initData' });
             return;
         }
