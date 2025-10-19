@@ -82,11 +82,17 @@ async function main() {
         });
 
         // 根据事件匹配生成通知消息
-        startDispatcherLoop(redis, mysqlPool).catch((e) => console.error("dispatcher crash", e))
+        if (config.EVENT_HANDLER_OPEN) {
+            startDispatcherLoop(redis, mysqlPool).catch((e) => console.error("dispatcher crash", e))
+        }
         // 推送通知消息
-        notifyWorker(redis).catch((e) => console.error("notify crash", e))
+        if (config.NOTIFY_OPEN) {
+            notifyWorker(redis).catch((e) => console.error("notify crash", e))
+        }
         // 启动TG处理ask coin
-        bot.startPolling()
+        if (config.ASK_COIN_OPEN) {
+            bot.startPolling()
+        }
     } catch (e) {
         console.error("startup error", e)
         process.exit(1)

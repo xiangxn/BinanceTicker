@@ -20,12 +20,15 @@ export const config = {
     NOTIFY_QUEUE_KEY: 'perpx:queue:notify',
 
     // strategy
+    EVENT_HANDLER_OPEN: process.env.EVENT_HANDLER_OPEN === 'true',
     SUBS_CACHE_REFRESH_MS: parseInt(process.env.SUBS_CACHE_REFRESH_MS || String(20 * 1000)), // 20s
 
     // notify
+    NOTIFY_OPEN: process.env.NOTIFY_OPEN === 'true',
     NOTIFY_CONCURRENCY_COUNT: parseInt(process.env.NOTIFY_CONCURRENCY_COUNT || String(5)),
 
     // ask coin
+    ASK_COIN_OPEN: process.env.ASK_COIN_OPEN === 'true',
     TG_CHAT_ID: "-1002876070327",
     TG_MESSAGE_THREAD_ID: "15",
     TG_ASK_COIN_INTERVAL: 2,   // minute
