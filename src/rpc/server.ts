@@ -9,7 +9,7 @@ import * as protoLoader from '@grpc/proto-loader';
 import mysql from "mysql2/promise";
 import { User } from '../db/user';
 import path from 'path';
-import { ProfileResponse } from './proto/perpx';
+import { GetInvoicesResponse, Invoice, ProfileResponse } from './proto/perpx';
 import { isValid } from '@tma.js/init-data-node';
 
 
@@ -65,6 +65,50 @@ server.addService(grpcObj.perpx.PerpxService.service, {
                 console.debug("response:", response)
                 callback(null, response);
             }
+        } catch (err) {
+            callback({ code: grpc.status.UNAUTHENTICATED, message: 'Invalid JWT' });
+        }
+    },
+    updateAvatar: async (call: any, callback: any) => {
+        const { token, avatar } = call.request;
+        try {
+            const decoded = jwt.verify(token, config.JWT_SECRET) as { user_id: string };
+            console.debug("decoded:", decoded)
+            const ok = await new User(mysqlPool).updateAvatar(decoded.user_id, avatar)
+            if (!ok) {
+                callback({ code: grpc.status.INVALID_ARGUMENT, message: 'User does not exist' });
+            } else {
+                callback(null, { success: true });
+            }
+        } catch (err) {
+            callback({ code: grpc.status.UNAUTHENTICATED, message: 'Invalid JWT' });
+        }
+    },
+    updateEmail: async (call: any, callback: any) => {
+        const { token, email } = call.request;
+        try {
+            const decoded = jwt.verify(token, config.JWT_SECRET) as { user_id: string };
+            console.debug("decoded:", decoded)
+            const ok = await new User(mysqlPool).updateEmail(decoded.user_id, email)
+            if (!ok) {
+                callback({ code: grpc.status.INVALID_ARGUMENT, message: 'User does not exist' });
+            } else {
+                callback(null, { success: true });
+            }
+        } catch (err) {
+            callback({ code: grpc.status.UNAUTHENTICATED, message: 'Invalid JWT' });
+        }
+    },
+    getInvoices: async (call: any, callback: any) => {
+        const { token, page, pageSize } = call.request;
+        console.debug("getInvoices:", token, page, pageSize)
+        try {
+            const decoded = jwt.verify(token, config.JWT_SECRET) as { user_id: string };
+            const invoices = await new User(mysqlPool).getInvoices(decoded.user_id, page, pageSize)
+            callback(null, GetInvoicesResponse.fromJSON({
+                invoices: invoices.list.map(invoice => Invoice.fromJSON(invoice)),
+                total: invoices.total
+            }));
         } catch (err) {
             callback({ code: grpc.status.UNAUTHENTICATED, message: 'Invalid JWT' });
         }

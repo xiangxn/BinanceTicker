@@ -5,6 +5,24 @@ package perpx;
 service PerpxService {
   rpc loginWithTelegram (TelegramLoginRequest) returns (LoginResponse);
   rpc getProfile (ProfileRequest) returns (ProfileResponse);
+  rpc updateAvatar (UpdateAvatarRequest) returns (DefaultResponse);
+  rpc updateEmail (UpdateEmailRequest) returns (DefaultResponse);
+  rpc getInvoices (GetInvoicesRequest) returns (GetInvoicesResponse);
+}
+
+message DefaultResponse {
+  bool success = 1;
+  optional string message = 2;
+}
+
+message UpdateAvatarRequest {
+  string token = 1;
+  string avatar = 2;
+}
+
+message UpdateEmailRequest {
+  string token = 1;
+  string email = 2;
 }
 
 message TelegramLoginRequest {
@@ -20,7 +38,7 @@ message ProfileRequest {
 }
 
 message ProfileResponse {
-  int32 telegram_id = 1;
+  int64 telegram_id = 1;
   string telegram_name = 2;
   int32 max_strategies = 3;
   bool active = 4;
@@ -28,4 +46,26 @@ message ProfileResponse {
   optional string subscription_end = 6;
   optional string email = 7;
   optional string avatar = 8;
+}
+
+message GetInvoicesRequest {
+  string token = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message GetInvoicesResponse {
+  repeated Invoice invoices = 1;
+  int32 total = 2;
+}
+
+message Invoice {
+  string invoice_id = 1;
+  string amount = 2;
+  string currency = 3;
+  string chain = 4;
+  string status = 5;
+  string paid_at = 6;
+  string tx_hash = 7;
+  int32 confirmations = 8;
 }
