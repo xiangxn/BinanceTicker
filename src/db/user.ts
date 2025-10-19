@@ -77,4 +77,38 @@ ON DUPLICATE KEY UPDATE tg_id = tg_id;`
             list: rows as any[],
         };
     }
+
+    async getStrategies(tgId: string) {
+        const sql = `SELECT s.id,s.user_id AS userId,s.strategy_type AS strategyType,s.symbol,s.period,s.params,s.is_active AS isActive FROM user_strategies AS s
+LEFT JOIN users AS u ON s.user_id = u.id
+WHERE u.tg_id=?
+ORDER BY s.updated_at DESC;`
+        const [rows] = await this.mysql.query(sql, [tgId]);
+        return rows as any[]
+    }
+
+    async updateStrategy(id: string, strategyType: string, symbol: string, period: string, arams: string) {
+        const sql = `UPDATE user_strategies SET symbol=?,period=?,params=?,strategy_type=? WHERE id=?;`
+        const [result] = await this.mysql.execute<mysql.ResultSetHeader>(sql, [symbol, period, arams, strategyType, id])
+        return result.affectedRows > 0
+    }
+
+    async addStrategy(userId: number, strategyType: string, symbol: string, period: string, arams: string) {
+        const sql = `INSERT INTO user_strategies (user_id,strategy_type,symbol,period,params)
+VALUES (?,?,?,?,?);`
+        const [result] = await this.mysql.execute<mysql.ResultSetHeader>(sql, [userId, strategyType, symbol, period, arams])
+        return result.affectedRows > 0
+    }
+
+    async deleteStrategy(id: string) {
+        const sql = `DELETE FROM user_strategies WHERE id=?;`
+        const [result] = await this.mysql.execute<mysql.ResultSetHeader>(sql, [id])
+        return result.affectedRows > 0
+    }
+
+    async getStrategyCount(userId: number) {
+        const sql = `SELECT COUNT(id) as count FROM user_strategies WHERE user_id=?;`
+        const [rows] = await this.mysql.query(sql, [userId]);
+        return (rows as any[])[0]?.count ?? 0;
+    }
 }

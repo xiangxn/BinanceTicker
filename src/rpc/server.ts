@@ -9,7 +9,7 @@ import * as protoLoader from '@grpc/proto-loader';
 import mysql from "mysql2/promise";
 import { User } from '../db/user';
 import path from 'path';
-import { GetInvoicesResponse, Invoice, ProfileResponse } from './proto/perpx';
+import { GetInvoicesResponse, GetStrategiesResponse, Invoice, ProfileResponse, Strategy } from './proto/perpx';
 import { isValid } from '@tma.js/init-data-node';
 
 
@@ -109,6 +109,97 @@ server.addService(grpcObj.perpx.PerpxService.service, {
                 invoices: invoices.list.map(invoice => Invoice.fromJSON(invoice)),
                 total: invoices.total
             }));
+        } catch (err) {
+            callback({ code: grpc.status.UNAUTHENTICATED, message: 'Invalid JWT' });
+        }
+    },
+    getStrategies: async (call: any, callback: any) => {
+        const { token } = call.request;
+        try {
+            const decoded = jwt.verify(token, config.JWT_SECRET) as { user_id: string };
+            const strategies = await new User(mysqlPool).getStrategies(decoded.user_id)
+            console.debug("strategies:", strategies)
+            callback(null, GetStrategiesResponse.fromJSON({
+                strategies: strategies.map(strategy => Strategy.fromJSON({
+                    ...strategy,
+                    params: JSON.stringify(strategy.params)
+                }))
+            }));
+        } catch (err) {
+            callback({ code: grpc.status.UNAUTHENTICATED, message: 'Invalid JWT' });
+        }
+    },
+    updateStrategy: async (call: any, callback: any) => {
+        // TODO:检查params与类型是否匹配
+        const { token, id, strategyType, symbol, period, params } = call.request;
+        try {
+            const db = new User(mysqlPool)
+            const decoded = jwt.verify(token, config.JWT_SECRET) as { user_id: string };
+            const user = await db.getUser(decoded.user_id)
+            if (user) {
+                if (user.maxStrategies <= 1) {
+                    if (symbol.includes("*") || period.includes("*")) {
+                        callback({ code: grpc.status.INVALID_ARGUMENT, message: 'No permission to use wildcards' });
+                        return
+                    }
+                }
+                const ok = await db.updateStrategy(id, strategyType, symbol, period, params)
+                if (!ok) {
+                    callback({ code: grpc.status.INVALID_ARGUMENT, message: 'User does not exist' });
+                } else {
+                    callback(null, { success: true });
+                }
+            } else {
+                callback({ code: grpc.status.INVALID_ARGUMENT, message: 'User does not exist' });
+            }
+        } catch (err) {
+            callback({ code: grpc.status.UNAUTHENTICATED, message: 'Invalid JWT' });
+        }
+    },
+    addStrategy: async (call: any, callback: any) => {
+        // TODO:检查params与类型是否匹配
+        const { token, strategyType, symbol, period, params } = call.request;
+        try {
+            const db = new User(mysqlPool)
+            const decoded = jwt.verify(token, config.JWT_SECRET) as { user_id: string };
+            const user = await db.getUser(decoded.user_id)
+            if (user) {
+                if (user.maxStrategies <= 1) {
+                    if (symbol.includes("*") || period.includes("*")) {
+                        callback({ code: grpc.status.INVALID_ARGUMENT, message: 'No permission to use wildcards' });
+                        return
+                    }
+                } else {
+                    const count = await db.getStrategyCount(user.id)
+                    if (count + 1 > user.maxStrategies) {
+                        callback({ code: grpc.status.INVALID_ARGUMENT, message: 'Max strategies reached' });
+                        return
+                    }
+                }
+                const ok = await db.addStrategy(user.id, strategyType, symbol, period, params)
+                if (!ok) {
+                    callback({ code: grpc.status.INVALID_ARGUMENT, message: 'Failed to add strategy' });
+                } else {
+                    callback(null, { success: true });
+                }
+            } else {
+                callback({ code: grpc.status.INVALID_ARGUMENT, message: 'User does not exist' });
+            }
+
+        } catch (err) {
+            callback({ code: grpc.status.UNAUTHENTICATED, message: 'Invalid JWT' });
+        }
+    },
+    deleteStrategy: async (call: any, callback: any) => {
+        const { token, id } = call.request;
+        try {
+            const decoded = jwt.verify(token, config.JWT_SECRET) as { user_id: string };
+            const ok = await new User(mysqlPool).deleteStrategy(id)
+            if (!ok) {
+                callback({ code: grpc.status.INVALID_ARGUMENT, message: 'Strategy does not exist' });
+            } else {
+                callback(null, { success: true });
+            }
         } catch (err) {
             callback({ code: grpc.status.UNAUTHENTICATED, message: 'Invalid JWT' });
         }

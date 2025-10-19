@@ -8,6 +8,10 @@ service PerpxService {
   rpc updateAvatar (UpdateAvatarRequest) returns (DefaultResponse);
   rpc updateEmail (UpdateEmailRequest) returns (DefaultResponse);
   rpc getInvoices (GetInvoicesRequest) returns (GetInvoicesResponse);
+  rpc getStrategies (GetStrategiesRequest) returns (GetStrategiesResponse);
+  rpc updateStrategy (UpdateStrategyRequest) returns (DefaultResponse);
+  rpc addStrategy (AddStrategyRequest) returns (DefaultResponse);
+  rpc deleteStrategy (DeleteStrategyRequest) returns (DefaultResponse);
 }
 
 message DefaultResponse {
@@ -68,4 +72,44 @@ message Invoice {
   string paid_at = 6;
   string tx_hash = 7;
   int32 confirmations = 8;
+}
+
+message GetStrategiesRequest {
+  string token = 1;
+}
+
+message GetStrategiesResponse {
+  repeated Strategy strategies = 1;
+}
+
+message Strategy {
+  int32 id = 1;
+  int32 user_id = 2;
+  string strategy_type = 3;
+  string symbol = 4;
+  string period = 5;
+  string params = 6;
+  bool is_active = 7;
+}
+
+message UpdateStrategyRequest {
+  string token = 1;
+  int32 id = 2;
+  string strategy_type = 3;
+  string symbol = 4;
+  string period = 5;
+  string params = 6;
+}
+
+message AddStrategyRequest {
+  string token = 1;
+  string strategy_type = 2;
+  string symbol = 3;
+  string period = 4;
+  string params = 5;
+}
+
+message DeleteStrategyRequest {
+  string token = 1;
+  int32 id = 2;
 }
