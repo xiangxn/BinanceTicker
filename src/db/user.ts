@@ -9,7 +9,8 @@ export class User {
 
     async getUser(tgId: string) {
         const sql = `SELECT u.id,u.tg_id AS telegramId,u.tg_name AS telegramName,u.email,u.avatar,
-s.max_strategies as maxStrategies,s.start_at as subscriptionStart,s.end_at as subscriptionEnd,IFNULL(s.active,0) as active
+s.max_strategies as maxStrategies,s.start_at as subscriptionStart,s.end_at as subscriptionEnd,IFNULL(s.active,0) as active,
+u.tg_chat_id as telegramChatId,u.tg_thread_id as telegramThreadId
 FROM users AS u
 LEFT JOIN subscriptions AS s ON u.id = s.user_id
 WHERE u.tg_id = ?;`;
@@ -20,8 +21,8 @@ WHERE u.tg_id = ?;`;
     async addUser(tgId: string, tgName: string, tgAvatar: string | null = null) {
         if (tgAvatar === undefined) tgAvatar = null
         const sql = `INSERT INTO users (tg_id,tg_name,avatar)
-VALUES (?,?,?)
-ON DUPLICATE KEY UPDATE tg_id = tg_id;`
+VALUES (?,?,?) AS new
+ON DUPLICATE KEY UPDATE tg_name = new.tg_name, avatar = new.avatar;`
         const [result] = await this.mysql.execute<mysql.ResultSetHeader>(sql, [tgId, tgName, tgAvatar])
         return result.affectedRows > 0
     }

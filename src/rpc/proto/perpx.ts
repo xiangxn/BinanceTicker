@@ -51,6 +51,8 @@ export interface ProfileResponse {
   subscriptionEnd?: string | undefined;
   email?: string | undefined;
   avatar?: string | undefined;
+  telegramChatId?: string | undefined;
+  telegramThreadId?: string | undefined;
 }
 
 export interface GetInvoicesRequest {
@@ -527,6 +529,8 @@ function createBaseProfileResponse(): ProfileResponse {
     subscriptionEnd: undefined,
     email: undefined,
     avatar: undefined,
+    telegramChatId: undefined,
+    telegramThreadId: undefined,
   };
 }
 
@@ -555,6 +559,12 @@ export const ProfileResponse: MessageFns<ProfileResponse> = {
     }
     if (message.avatar !== undefined) {
       writer.uint32(66).string(message.avatar);
+    }
+    if (message.telegramChatId !== undefined) {
+      writer.uint32(74).string(message.telegramChatId);
+    }
+    if (message.telegramThreadId !== undefined) {
+      writer.uint32(82).string(message.telegramThreadId);
     }
     return writer;
   },
@@ -630,6 +640,22 @@ export const ProfileResponse: MessageFns<ProfileResponse> = {
           message.avatar = reader.string();
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.telegramChatId = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.telegramThreadId = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -649,6 +675,8 @@ export const ProfileResponse: MessageFns<ProfileResponse> = {
       subscriptionEnd: isSet(object.subscriptionEnd) ? globalThis.String(object.subscriptionEnd) : undefined,
       email: isSet(object.email) ? globalThis.String(object.email) : undefined,
       avatar: isSet(object.avatar) ? globalThis.String(object.avatar) : undefined,
+      telegramChatId: isSet(object.telegramChatId) ? globalThis.String(object.telegramChatId) : undefined,
+      telegramThreadId: isSet(object.telegramThreadId) ? globalThis.String(object.telegramThreadId) : undefined,
     };
   },
 
@@ -678,6 +706,12 @@ export const ProfileResponse: MessageFns<ProfileResponse> = {
     if (message.avatar !== undefined) {
       obj.avatar = message.avatar;
     }
+    if (message.telegramChatId !== undefined) {
+      obj.telegramChatId = message.telegramChatId;
+    }
+    if (message.telegramThreadId !== undefined) {
+      obj.telegramThreadId = message.telegramThreadId;
+    }
     return obj;
   },
 
@@ -696,6 +730,8 @@ export const ProfileResponse: MessageFns<ProfileResponse> = {
     message.subscriptionEnd = object.subscriptionEnd ?? undefined;
     message.email = object.email ?? undefined;
     message.avatar = object.avatar ?? undefined;
+    message.telegramChatId = object.telegramChatId ?? undefined;
+    message.telegramThreadId = object.telegramThreadId ?? undefined;
     return message;
   },
 };

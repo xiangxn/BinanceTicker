@@ -50,6 +50,8 @@ message ProfileResponse {
   optional string subscription_end = 6;
   optional string email = 7;
   optional string avatar = 8;
+  optional string telegram_chat_id = 9;
+  optional string telegram_thread_id = 10;
 }
 
 message GetInvoicesRequest {
