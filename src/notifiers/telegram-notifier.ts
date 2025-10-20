@@ -74,3 +74,12 @@ export async function sendMiniApp(chatId: number, messageThreadId?: number | nul
         console.error('[Telegram] 发送失败：', err.message);
     });
 }
+
+export async function deleteMsg(chatId: number, messageId: number) {
+  try {
+    await bot.deleteMessage(chatId, messageId);
+    console.debug(`[Telegram] ✅ 已删除消息 ${messageId} 于群 ${chatId}`);
+  } catch (err: any) {
+    console.error('[Telegram] ❌ 删除失败：', err.message);
+  }
+}

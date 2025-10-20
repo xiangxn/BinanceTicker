@@ -1,6 +1,6 @@
 import TelegramBot from 'node-telegram-bot-api';
 import { config } from "./config";
-import { sendAlert, sendMiniApp } from './notifiers/telegram-notifier';
+import { deleteMsg, sendAlert, sendMiniApp } from './notifiers/telegram-notifier';
 import { login, grokChat } from "./utils/grok";
 import mysql from "mysql2/promise";
 import { User } from './db/user';
@@ -10,20 +10,26 @@ let lastAskTime = 0
 export async function onTGMessage(message: TelegramBot.Message, metadata: TelegramBot.Metadata, db: mysql.Pool) {
     console.debug(message, metadata)
     if (message.chat.id === parseInt(config.TG_CHAT_ID) && message.message_thread_id && message.message_thread_id === parseInt(config.TG_MESSAGE_THREAD_ID)) {
-        if (message.text?.startsWith(`@${config.BOT_NAME}`)) {
-            const [, coin] = message.text.split(" ")
-            if (coin && coin.length > 0) {
-                const result = await askCoin(coin)
-                if (result) {
-                    await sendAlert({
-                        chatId: config.TG_CHAT_ID,
-                        message: result,
-                        messageThreadId: config.TG_MESSAGE_THREAD_ID,
-                        replyToMessageId: message.message_id
-                    })
-                } else {
-                    console.warn(`[ask_coin] ask coin ${coin} failed`)
+        if (message.message_thread_id) {
+            if (message.message_thread_id === Number(config.TG_MESSAGE_THREAD_ID)) {
+                if (message.text?.startsWith(`@${config.BOT_NAME}`)) {
+                    const [, coin] = message.text.split(" ")
+                    if (coin && coin.length > 0) {
+                        const result = await askCoin(coin)
+                        if (result) {
+                            await sendAlert({
+                                chatId: config.TG_CHAT_ID,
+                                message: result,
+                                messageThreadId: config.TG_MESSAGE_THREAD_ID,
+                                replyToMessageId: message.message_id
+                            })
+                        } else {
+                            console.warn(`[ask_coin] ask coin ${coin} failed`)
+                        }
+                    }
                 }
+            } else {
+                await deleteMsg(Number(config.TG_CHAT_ID), message.message_id)
             }
         }
     }
@@ -36,6 +42,8 @@ export async function onTGMessage(message: TelegramBot.Message, metadata: Telegr
         await bindGroup(db, message.from.id, message.chat.id, message.message_id, message.message_thread_id ? message.message_thread_id : null)
     }
 }
+
+
 
 /**
  * 处理/start bind_user
