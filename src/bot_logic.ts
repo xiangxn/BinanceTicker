@@ -1,6 +1,6 @@
 import TelegramBot from 'node-telegram-bot-api';
 import { config } from "./config";
-import { deleteMsg, sendAlert, sendMiniApp } from './notifiers/telegram-notifier';
+import { deleteMsg, sendAlert, sendMiniApp, isAdmin } from './notifiers/telegram-notifier';
 import { login, grokChat } from "./utils/grok";
 import mysql from "mysql2/promise";
 import { User } from './db/user';
@@ -9,7 +9,7 @@ let lastAskTime = 0
 
 export async function onTGMessage(message: TelegramBot.Message, metadata: TelegramBot.Metadata, db: mysql.Pool) {
     console.debug(message, metadata)
-    if (message.chat.id === parseInt(config.TG_CHAT_ID) && message.message_thread_id && message.message_thread_id === parseInt(config.TG_MESSAGE_THREAD_ID)) {
+    if (message.chat.id === parseInt(config.TG_CHAT_ID)) {
         if (message.message_thread_id) {
             if (message.message_thread_id === Number(config.TG_MESSAGE_THREAD_ID)) {
                 if (message.text?.startsWith(`@${config.BOT_NAME}`)) {
@@ -29,21 +29,26 @@ export async function onTGMessage(message: TelegramBot.Message, metadata: Telegr
                     }
                 }
             } else {
-                await deleteMsg(Number(config.TG_CHAT_ID), message.message_id)
+                if (message.from) {
+                    // if (!isAdmin(message.from.id)) {
+                        await deleteMsg(Number(config.TG_CHAT_ID), message.message_id)
+                    // }
+                }
             }
         }
+        return
     }
     // 绑定用户
     if (message.text?.startsWith("/start bind_user") && message.from && message.chat) {
         await bindUser(db, message.from.id, message.chat.id)
+        return
     }
     // 绑定群组  /start@bn_ticker_bot bind_group
     if (message.text?.startsWith(`/start@${config.BOT_NAME} bind_group`) && message.from && message.chat) {
         await bindGroup(db, message.from.id, message.chat.id, message.message_id, message.message_thread_id ? message.message_thread_id : null)
+        return
     }
 }
-
-
 
 /**
  * 处理/start bind_user

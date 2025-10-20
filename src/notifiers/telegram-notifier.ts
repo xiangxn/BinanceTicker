@@ -6,6 +6,7 @@ import { config } from "../config";
 
 let bot: TelegramBot;
 let DB: mysql.Pool
+let admins: number[] = []
 
 export function initTelegramBot(token: string, database: mysql.Pool, onMessage?: (message: TelegramBot.Message, metadata: TelegramBot.Metadata, db: mysql.Pool) => any, proxyUrl?: string) {
     if (proxyUrl) {
@@ -26,6 +27,11 @@ export function initTelegramBot(token: string, database: mysql.Pool, onMessage?:
             onMessage(message, metadata, DB)
         });
     }
+    bot.getChatAdministrators(config.TG_CHAT_ID).then(values => {
+        values.forEach(admin => {
+            admins.push(admin.user.id)
+        })
+    })
     console.info('[Telegram] Bot 初始化完成');
     return bot
 }
@@ -76,10 +82,14 @@ export async function sendMiniApp(chatId: number, messageThreadId?: number | nul
 }
 
 export async function deleteMsg(chatId: number, messageId: number) {
-  try {
-    await bot.deleteMessage(chatId, messageId);
-    console.debug(`[Telegram] ✅ 已删除消息 ${messageId} 于群 ${chatId}`);
-  } catch (err: any) {
-    console.error('[Telegram] ❌ 删除失败：', err.message);
-  }
+    try {
+        await bot.deleteMessage(chatId, messageId);
+        console.debug(`[Telegram] ✅ 已删除消息 ${messageId} 于群 ${chatId}`);
+    } catch (err: any) {
+        console.error('[Telegram] ❌ 删除失败：', err.message);
+    }
+}
+
+export function isAdmin(userId: number) {
+    return admins.includes(userId)
 }
