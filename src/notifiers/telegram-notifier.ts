@@ -52,11 +52,15 @@ export async function sendMiniApp(chatId: number, messageThreadId?: number | nul
         console.warn('[Telegram] Bot 未初始化，无法发送');
         return;
     }
+    let botton = { text: "Open PerpX", web_app: { url: config.MINI_APP_URL } } as any
+    if (replyToMessageId) {
+        botton = { text: "Open PerpX", url: `https://t.me/${config.BOT_NAME}/?startapp` }
+    }
     let opt = {
         parse_mode: 'Markdown',
         reply_markup: {
             inline_keyboard: [[
-                { text: "Open PerpX", web_app: { url: config.MINI_APP_URL } }
+                { ...botton }
             ]]
         }
     } as any

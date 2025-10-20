@@ -27,7 +27,8 @@ export const config = {
     NOTIFY_OPEN: process.env.NOTIFY_OPEN === 'true',
     NOTIFY_CONCURRENCY_COUNT: parseInt(process.env.NOTIFY_CONCURRENCY_COUNT || String(5)),
 
-    // ask coin
+    // bot logic
+    BOT_NAME: "bn_ticker_bot",
     BOT_LOGIC_OPEN: process.env.BOT_LOGIC_OPEN === 'true',
     TG_CHAT_ID: "-1002876070327",
     TG_MESSAGE_THREAD_ID: "15",

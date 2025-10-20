@@ -6,12 +6,11 @@ import mysql from "mysql2/promise";
 import { User } from './db/user';
 
 let lastAskTime = 0
-const BOT_NAME = "bn_ticker_bot"
 
 export async function onTGMessage(message: TelegramBot.Message, metadata: TelegramBot.Metadata, db: mysql.Pool) {
     console.debug(message, metadata)
     if (message.chat.id === parseInt(config.TG_CHAT_ID) && message.message_thread_id && message.message_thread_id === parseInt(config.TG_MESSAGE_THREAD_ID)) {
-        if (message.text?.startsWith(`@${BOT_NAME}`)) {
+        if (message.text?.startsWith(`@${config.BOT_NAME}`)) {
             const [, coin] = message.text.split(" ")
             if (coin && coin.length > 0) {
                 const result = await askCoin(coin)
@@ -33,7 +32,7 @@ export async function onTGMessage(message: TelegramBot.Message, metadata: Telegr
         await bindUser(db, message.from.id, message.chat.id)
     }
     // 绑定群组  /start@bn_ticker_bot bind_group
-    if (message.text?.startsWith(`/start@${BOT_NAME} bind_group`) && message.from && message.chat) {
+    if (message.text?.startsWith(`/start@${config.BOT_NAME} bind_group`) && message.from && message.chat) {
         await bindGroup(db, message.from.id, message.chat.id, message.message_id, message.message_thread_id ? message.message_thread_id : null)
     }
 }
