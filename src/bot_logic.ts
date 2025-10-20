@@ -30,9 +30,9 @@ export async function onTGMessage(message: TelegramBot.Message, metadata: Telegr
                 }
             } else {
                 if (message.from) {
-                    // if (!isAdmin(message.from.id)) {
+                    if (!isAdmin(message.from.id)) {
                         await deleteMsg(Number(config.TG_CHAT_ID), message.message_id)
-                    // }
+                    }
                 }
             }
         }
