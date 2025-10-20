@@ -11,11 +11,7 @@ import Redis from "ioredis";
 import mysql from "mysql2/promise";
 import { notifyWorker } from "./notify";
 import { startDispatcherLoop } from "./dispatcher";
-import { onTGMessage } from './ask_coin';
-
-// ✅ 初始化 Telegram
-const bot = initTelegramBot(config.TG_API_KEY, onTGMessage, config.PROXY);
-
+import { onTGMessage } from './bot_logic';
 
 const mysqlPool = mysql.createPool({
     host: config.MYSQL_HOST,
@@ -30,6 +26,9 @@ const redis = new Redis(config.REDIS_PORT, config.REDIS_HOST, {
     username: config.REDIS_USER,
     password: config.REDIS_PASS,
 });
+
+// ✅ 初始化 Telegram
+const bot = initTelegramBot(config.TG_API_KEY, mysqlPool, onTGMessage, config.PROXY);
 
 async function shutdown() {
     console.info("shutting down...");
@@ -90,7 +89,7 @@ async function main() {
             notifyWorker(redis).catch((e) => console.error("notify crash", e))
         }
         // 启动TG处理ask coin
-        if (config.ASK_COIN_OPEN) {
+        if (config.BOT_LOGIC_OPEN) {
             bot.startPolling()
         }
     } catch (e) {

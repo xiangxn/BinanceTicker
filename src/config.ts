@@ -28,11 +28,14 @@ export const config = {
     NOTIFY_CONCURRENCY_COUNT: parseInt(process.env.NOTIFY_CONCURRENCY_COUNT || String(5)),
 
     // ask coin
-    ASK_COIN_OPEN: process.env.ASK_COIN_OPEN === 'true',
+    BOT_LOGIC_OPEN: process.env.BOT_LOGIC_OPEN === 'true',
     TG_CHAT_ID: "-1002876070327",
     TG_MESSAGE_THREAD_ID: "15",
     TG_ASK_COIN_INTERVAL: 2,   // minute
 
     // grpc
     JWT_SECRET: process.env.JWT_SECRET || '0x0000001570BD7753dFCb42E1AD2E33D86eBA8870',
+
+    // mini app 
+    MINI_APP_URL: "https://perpxui.bitsflea.com"
 }

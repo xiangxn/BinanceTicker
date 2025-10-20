@@ -1,10 +1,13 @@
 import TelegramBot from 'node-telegram-bot-api';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { TGMessage } from '../utils/types';
+import mysql from "mysql2/promise";
+import { config } from "../config";
 
 let bot: TelegramBot;
+let DB: mysql.Pool
 
-export function initTelegramBot(token: string, onMessage?: (message: TelegramBot.Message, metadata: TelegramBot.Metadata) => any, proxyUrl?: string) {
+export function initTelegramBot(token: string, database: mysql.Pool, onMessage?: (message: TelegramBot.Message, metadata: TelegramBot.Metadata, db: mysql.Pool) => any, proxyUrl?: string) {
     if (proxyUrl) {
         const agent = new HttpsProxyAgent(proxyUrl);
 
@@ -17,8 +20,11 @@ export function initTelegramBot(token: string, onMessage?: (message: TelegramBot
     } else {
         bot = new TelegramBot(token, { polling: false });
     }
+    DB = database
     if (onMessage) {
-        bot.on('message', onMessage);
+        bot.on('message', (message, metadata) => {
+            onMessage(message, metadata, DB)
+        });
     }
     console.info('[Telegram] Bot 初始化完成');
     return bot
@@ -37,6 +43,30 @@ export async function sendAlert(msg: TGMessage) {
         opt['reply_to_message_id'] = msg.replyToMessageId
     }
     await bot.sendMessage(msg.chatId, msg.message, opt).catch((err) => {
+        console.error('[Telegram] 发送失败：', err.message);
+    });
+}
+
+export async function sendMiniApp(chatId: number, messageThreadId?: number | null, replyToMessageId?: number | null) {
+    if (!bot) {
+        console.warn('[Telegram] Bot 未初始化，无法发送');
+        return;
+    }
+    let opt = {
+        parse_mode: 'Markdown',
+        reply_markup: {
+            inline_keyboard: [[
+                { text: "Open PerpX", web_app: { url: config.MINI_APP_URL } }
+            ]]
+        }
+    } as any
+    if (messageThreadId) {
+        opt['message_thread_id'] = messageThreadId
+    }
+    if (replyToMessageId) {
+        opt['reply_to_message_id'] = replyToMessageId
+    }
+    await bot.sendMessage(chatId, "点击下方按钮打开PerpX", opt).catch((err) => {
         console.error('[Telegram] 发送失败：', err.message);
     });
 }

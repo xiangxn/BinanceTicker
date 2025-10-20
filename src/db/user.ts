@@ -27,6 +27,12 @@ ON DUPLICATE KEY UPDATE tg_name = new.tg_name, avatar = new.avatar;`
         return result.affectedRows > 0
     }
 
+    async updateTelegramChatId(tgId: string, chatId: number | null = null, threadId: number | null = null) {
+        const sql = `UPDATE users SET tg_chat_id = ?,tg_thread_id=? WHERE tg_id = ?;`
+        const [result] = await this.mysql.execute<mysql.ResultSetHeader>(sql, [chatId, threadId, tgId])
+        return result.affectedRows > 0
+    }
+
     async updateAvatar(tgId: string, avatar: string) {
         const sql = `UPDATE users SET avatar = ? WHERE tg_id = ?;`
         const [result] = await this.mysql.execute<mysql.ResultSetHeader>(sql, [avatar, tgId])

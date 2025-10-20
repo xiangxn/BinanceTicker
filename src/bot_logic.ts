@@ -1,14 +1,17 @@
 import TelegramBot from 'node-telegram-bot-api';
 import { config } from "./config";
-import { sendAlert } from './notifiers/telegram-notifier';
+import { sendAlert, sendMiniApp } from './notifiers/telegram-notifier';
 import { login, grokChat } from "./utils/grok";
+import mysql from "mysql2/promise";
+import { User } from './db/user';
 
 let lastAskTime = 0
+const BOT_NAME = "bn_ticker_bot"
 
-export async function onTGMessage(message: TelegramBot.Message, metadata: TelegramBot.Metadata) {
+export async function onTGMessage(message: TelegramBot.Message, metadata: TelegramBot.Metadata, db: mysql.Pool) {
     console.debug(message, metadata)
     if (message.chat.id === parseInt(config.TG_CHAT_ID) && message.message_thread_id && message.message_thread_id === parseInt(config.TG_MESSAGE_THREAD_ID)) {
-        if (message.text?.startsWith("@bn_ticker_bot ")) {
+        if (message.text?.startsWith(`@${BOT_NAME}`)) {
             const [, coin] = message.text.split(" ")
             if (coin && coin.length > 0) {
                 const result = await askCoin(coin)
@@ -25,6 +28,36 @@ export async function onTGMessage(message: TelegramBot.Message, metadata: Telegr
             }
         }
     }
+    // 绑定用户
+    if (message.text?.startsWith("/start bind_user") && message.from && message.chat) {
+        await bindUser(db, message.from.id, message.chat.id)
+    }
+    // 绑定群组  /start@bn_ticker_bot bind_group
+    if (message.text?.startsWith(`/start@${BOT_NAME} bind_group`) && message.from && message.chat) {
+        await bindGroup(db, message.from.id, message.chat.id, message.message_id, message.message_thread_id ? message.message_thread_id : null)
+    }
+}
+
+/**
+ * 处理/start bind_user
+ * @param db 
+ * @param tgId 
+ * @param chatId 
+ */
+async function bindUser(db: mysql.Pool, tgId: number, chatId: number) {
+    const user = new User(db)
+    const ok = await user.updateTelegramChatId(tgId.toString(), chatId, null)
+    if (ok) {
+        await sendMiniApp(chatId)
+    }
+}
+
+async function bindGroup(db: mysql.Pool, tgId: number, chatId: number, replyToMessageId: number, threadId: number | null = null) {
+    const user = new User(db)
+    const ok = await user.updateTelegramChatId(tgId.toString(), chatId, threadId)
+    if (ok) {
+        await sendMiniApp(chatId, threadId, replyToMessageId)
+    }
 }
 
 async function askCoin(coin: string) {
@@ -36,7 +69,7 @@ async function askCoin(coin: string) {
     try {
         const loggedIn = await login()
         if (loggedIn) {
-            const message = await grokChat(`你好, 请帮我查看“${coin}”这个加密货币的背景、融资情况以及简介, 以简短的文字回答, 不要超过500字。`)
+            const message = await grokChat(`你好, 请帮我查看“${coin}”这个加密货币的简介、背景、融资情况, 以简短的文字回答, 不要超过500字。`)
             console.debug(`[ask_coin] ask coin ${coin} success: ${message}`)
             if (message) {
                 const msg = filterContent(message)
