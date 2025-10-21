@@ -4,7 +4,7 @@ dotenv.config()
 import { initEncryptor } from "./config";
 initEncryptor()
 
-import { fork } from 'child_process';
+import { execSync, fork } from 'child_process';
 import path from 'path';
 
 import Redis from "ioredis";
@@ -39,12 +39,12 @@ async function shutdown() {
         serverProcess.kill();
     }
     // 关闭envoy的docker容器
-    // try {
-    //     execSync('docker stop perpx-envoy');
-    //     console.info('Docker container "perpx-envoy" stopped.');
-    // } catch (e) {
-    //     console.warn('Failed to stop Docker container:', e);
-    // }
+    try {
+        execSync('docker stop perpx-envoy');
+        console.info('Docker container "perpx-envoy" stopped.');
+    } catch (e) {
+        console.warn('Failed to stop Docker container:', e);
+    }
     process.exit(0);
 }
 
