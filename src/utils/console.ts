@@ -1,4 +1,6 @@
 import { config } from "../config"
+import { appendFile, mkdir } from "fs/promises"
+import { join } from "path"
 
 const originalConsole = { ...console };
 
@@ -13,6 +15,31 @@ const colors = {
     green: "\x1b[32m"
 };
 
+// 日志文件路径
+const LOG_DIR = join(__dirname, "../../logs");
+
+// 获取当前日期的日志文件名
+function getLogFilePath() {
+    return join(LOG_DIR, `${new Date().toISOString().split('T')[0]}.log`);
+}
+
+// 确保日志目录存在
+async function ensureLogDir() {
+    try {
+        await mkdir(LOG_DIR, { recursive: true });
+    } catch (err) {
+        originalConsole.error("Failed to create log directory:", err);
+    }
+}
+
+// 异步写入日志文件
+async function writeToFile(level: string, message: string) {
+    await ensureLogDir();
+    const logMessage = `${new Date().toISOString()} [${level}] ${message}\n`;
+    const logFile = getLogFilePath();
+    await appendFile(logFile, logMessage, { flag: "a" });
+}
+
 function getCurrentTimestamp(name: string): string {
     const now = new Date();
     return `[${now.toISOString().replace("T", " ").slice(0, 19)} ${name}]`; // YYYY-MM-DD HH:mm:ss
@@ -20,12 +47,16 @@ function getCurrentTimestamp(name: string): string {
 
 console.error = (...args) => {
     const callerFile = getCallFile();
+    const message = args.join(" ");
     originalConsole.error(colors.red, callerFile, getCurrentTimestamp("ERROR"), ...args, colors.reset);
+    writeToFile("ERROR", message).catch(err => originalConsole.error("Failed to write to log file:", err));
 };
 
 console.warn = (...args) => {
     const callerFile = getCallFile();
+    const message = args.join(" ");
     originalConsole.warn(colors.yellow, callerFile, getCurrentTimestamp("WARN"), ...args, colors.reset);
+    writeToFile("WARN", message).catch(err => originalConsole.error("Failed to write to log file:", err));
 };
 
 console.info = (...args) => {
