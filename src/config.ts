@@ -13,7 +13,6 @@ export function initEncryptor() {
         process.exit(1);
     }
     encryptor = new Encryptor(password)
-    console.log("encryptor:", encryptor)
 }
 
 export const getConfig = () => {
