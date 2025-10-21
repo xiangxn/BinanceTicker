@@ -48,6 +48,14 @@ export async function onTGMessage(message: TelegramBot.Message, metadata: Telegr
         await bindGroup(db, message.from.id, message.chat.id, message.message_id, message.message_thread_id ? message.message_thread_id : null)
         return
     }
+    // 手工绑定群组话题
+    if (message.text === "/bind" && message.from) {
+        const userDB = new User(db)
+        const user = await userDB.getUser(message.from.id.toString())
+        if (user) {
+            await bindGroup(db, message.from.id, message.chat.id, message.message_id, message.message_thread_id ? message.message_thread_id : null)
+        }
+    }
 }
 
 /**
