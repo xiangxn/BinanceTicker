@@ -22,7 +22,9 @@ const mysqlPool = mysql.createPool({
     connectionLimit: 10,
 });
 
-const redis = new Redis(config.REDIS_PORT, config.REDIS_HOST, {
+const redis = new Redis({
+    host: config.REDIS_HOST,
+    port: config.REDIS_PORT,
     username: config.REDIS_USER,
     password: config.REDIS_PASS,
 });
