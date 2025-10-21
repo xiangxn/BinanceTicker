@@ -49,7 +49,7 @@ export async function sendAlert(msg: TGMessage) {
         opt['reply_to_message_id'] = msg.replyToMessageId
     }
     await bot.sendMessage(msg.chatId, msg.message, opt).catch((err) => {
-        console.error('[Telegram] 发送失败：', err.message);
+        console.error('[Telegram] 发送失败：', err.message, msg);
     });
 }
 
