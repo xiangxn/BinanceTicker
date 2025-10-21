@@ -49,7 +49,7 @@ export async function onTGMessage(message: TelegramBot.Message, metadata: Telegr
         return
     }
     // 手工绑定群组话题
-    if (message.text === "/bind" && message.from) {
+    if (message.text === "/bind" && message.from && message.chat.type.includes("group")) {
         const userDB = new User(db)
         const user = await userDB.getUser(message.from.id.toString())
         if (user) {
