@@ -1,4 +1,6 @@
 import mysql from "mysql2/promise";
+import { StrategyType, SubscriptionType } from "../utils/types";
+import dayjs from "dayjs";
 
 export class User {
     private mysql: mysql.Pool
@@ -94,13 +96,13 @@ ORDER BY s.updated_at DESC;`
         return rows as any[]
     }
 
-    async updateStrategy(id: string, strategyType: string, symbol: string, period: string, arams: string) {
+    async updateStrategy(id: string, strategyType: StrategyType, symbol: string, period: string, arams: string) {
         const sql = `UPDATE user_strategies SET symbol=?,period=?,params=?,strategy_type=? WHERE id=?;`
         const [result] = await this.mysql.execute<mysql.ResultSetHeader>(sql, [symbol, period, arams, strategyType, id])
         return result.affectedRows > 0
     }
 
-    async addStrategy(userId: number, strategyType: string, symbol: string, period: string, arams: string) {
+    async addStrategy(userId: number, strategyType: StrategyType, symbol: string, period: string, arams: string) {
         const sql = `INSERT INTO user_strategies (user_id,strategy_type,symbol,period,params)
 VALUES (?,?,?,?,?);`
         const [result] = await this.mysql.execute<mysql.ResultSetHeader>(sql, [userId, strategyType, symbol, period, arams])
@@ -117,5 +119,33 @@ VALUES (?,?,?,?,?);`
         const sql = `SELECT COUNT(id) as count FROM user_strategies WHERE user_id=?;`
         const [rows] = await this.mysql.query(sql, [userId]);
         return (rows as any[])[0]?.count ?? 0;
+    }
+
+    async addSubscription(userId: number, type: SubscriptionType, maxStrategies: number = 1) {
+        const sql = `INSERT IGNORE INTO subscriptions (user_id,type,max_strategies,active) VALUES (?,?,?,?);`
+        await this.mysql.execute<mysql.ResultSetHeader>(sql, [userId, type, maxStrategies, 1])
+    }
+
+    async updateSubscription(userId: number, type: SubscriptionType, maxStrategies: number = 1) {
+        let startAt: Date | null = new Date(), endAt: Date | null
+        switch (type) {
+            case "free":
+                startAt = null
+                endAt = null
+                break;
+            case "vip_monthly":
+                endAt = dayjs().add(30, "day").toDate()
+                break;
+            case "vip_quarterly":
+                endAt = dayjs().add(90, "day").toDate()
+                break;
+            case "vip_yearly":
+                endAt = dayjs().add(365, "day").toDate()
+                break;
+            default: return false
+        }
+        const sql = `UPDATE subscriptions SET type=?,max_strategies=?,start_at=?,end_at=? WHERE user_id=?;`
+        const [result] = await this.mysql.execute<mysql.ResultSetHeader>(sql, [type, maxStrategies, startAt, endAt, userId])
+        return result.affectedRows > 0
     }
 }

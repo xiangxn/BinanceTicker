@@ -170,6 +170,10 @@ server.addService(grpcObj.perpx.PerpxService.service, {
             const user = await db.getUser(decoded.user_id)
             if (user) {
                 const count = await db.getStrategyCount(user.id)
+                // 检查是否有free订阅，如果没有就添加一条
+                if (count === 0) {
+                    await db.addSubscription(user.id, "free")
+                }
                 if (count + 1 > user.maxStrategies) {
                     callback({ code: grpc.status.INVALID_ARGUMENT, message: 'Max strategies reached' });
                     return

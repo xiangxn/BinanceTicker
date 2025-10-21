@@ -14,16 +14,19 @@ export type TGMessage = {
   replyToMessageId?: number
 }
 
+export type StrategyType = "ConsecutiveMove" | "VolatilitySpike" | "FundingRate"
 export type UserStrategy = {
   id: number;
   userId: number;
-  strategyType: string; // 策略类型: ConsecutiveMove, VolatilitySpike, FundingRate
+  strategyType: StrategyType; // 策略类型: ConsecutiveMove, VolatilitySpike, FundingRate
   symbol: string;   // 指定交易对(如:BTCUSDT)，或者通配符*
   period: string;   // 当类型为FundingRate时，period必须为all
   params: any;
   chatId: string;
   threadId: string;
 }
+
+export type SubscriptionType = "free" | "vip_monthly" | "vip_quarterly" | "vip_yearly"
 
 export type ConsecutiveMoveValue = {
   count: number;

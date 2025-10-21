@@ -3,13 +3,14 @@ DROP TABLE IF EXISTS `subscriptions`;
 CREATE TABLE `subscriptions` (
     `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
     `user_id` INT COMMENT '关联用户ID',
-    `type` VARCHAR(32) COMMENT '订阅类型，如 vip_monthly / vip_yearly',
+    `type` VARCHAR(32) COMMENT '订阅类型，如 free / vip_monthly /vip_quarterly / vip_yearly',
     `max_strategies` INT DEFAULT 10 COMMENT '最大策略数量',
     `start_at` datetime NULL COMMENT '订阅开始时间',
     `end_at` datetime NULL COMMENT '订阅结束时间',
     `active` BOOLEAN DEFAULT FALSE COMMENT '是否激活',
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    UNIQUE KEY `uniq_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户订阅(VIP)表';
 
 -- 链上通知/对账流水
@@ -43,7 +44,8 @@ CREATE TABLE `invoices` (
     `confirmations` INT DEFAULT 0 COMMENT '确认数',
     `expires_at` TIMESTAMP NULL COMMENT '订单过期时间',
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    UNIQUE KEY `uniq_invoice_id` (`invoice_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='支付订单表';
 
 -- 用户订阅的策略表
@@ -75,7 +77,8 @@ CREATE TABLE `users` (
   `tg_chat_id` VARCHAR(255) COMMENT '用于发送消息到用户的聊天ID',
   `tg_thread_id` VARCHAR(255) COMMENT '群组话题ID,可为空',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  UNIQUE KEY `uniq_tg_id` (`tg_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';
 
 
