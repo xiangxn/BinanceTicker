@@ -1,42 +1,70 @@
-export const config = {
-    debug: true,
-    TG_API_KEY: process.env.TG_API_KEY || '',
-    PROXY: process.env.PROXY || undefined,
+import { Encryptor } from './utils/encryptor';
+import * as readlineSync from 'readline-sync';
 
-    // mysql
-    MYSQL_HOST: process.env.MYSQL_HOST || 'localhost',
-    MYSQL_PORT: parseInt(process.env.MYSQL_PORT || '3306'),
-    MYSQL_USER: process.env.MYSQL_USER || 'root',
-    MYSQL_PASS: process.env.MYSQL_PASS || '<PASSWORD>',
-    MYSQL_DB: 'perpx',
+let encryptor: Encryptor
 
-    // redis
-    REDIS_HOST: process.env.REDIS_HOST || 'localhost',
-    REDIS_PORT: parseInt(process.env.REDIS_PORT || '6379'),
-    REDIS_USER: process.env.REDIS_USER || 'root',
-    REDIS_PASS: process.env.REDIS_PASS || '<PASSWORD>',
+export function initEncryptor() {
+    // Get password from CLI input (hidden)
+    const password = readlineSync.question('Enter encryption password: ', {
+        hideEchoBack: true
+    });
+    if (!password) {
+        console.error('Password is required');
+        process.exit(1);
+    }
+    encryptor = new Encryptor(password)
+    console.log("encryptor:", encryptor)
+}
 
-    RUST_QUEUE_KEY: 'perpx:queue:events',
-    NOTIFY_QUEUE_KEY: 'perpx:queue:notify',
+export const getConfig = () => {
+    if (process.env.CONFIG) {
+        return JSON.parse(process.env.CONFIG)
+    }
+    return {
+        debug: true,
+        TG_API_KEY: encryptor!.decrypt(process.env.TG_API_KEY || ''),
+        PROXY: process.env.PROXY || undefined,
 
-    // strategy
-    EVENT_HANDLER_OPEN: process.env.EVENT_HANDLER_OPEN === 'true',
-    SUBS_CACHE_REFRESH_MS: parseInt(process.env.SUBS_CACHE_REFRESH_MS || String(20 * 1000)), // 20s
+        // mysql
+        MYSQL_HOST: process.env.MYSQL_HOST || 'localhost',
+        MYSQL_PORT: parseInt(process.env.MYSQL_PORT || '3306'),
+        MYSQL_USER: process.env.MYSQL_USER || 'root',
+        MYSQL_PASS: encryptor!.decrypt(process.env.MYSQL_PASS || '<PASSWORD>'),
+        MYSQL_DB: 'perpx',
 
-    // notify
-    NOTIFY_OPEN: process.env.NOTIFY_OPEN === 'true',
-    NOTIFY_CONCURRENCY_COUNT: parseInt(process.env.NOTIFY_CONCURRENCY_COUNT || String(5)),
+        // redis
+        REDIS_HOST: process.env.REDIS_HOST || 'localhost',
+        REDIS_PORT: parseInt(process.env.REDIS_PORT || '6379'),
+        REDIS_USER: process.env.REDIS_USER || 'root',
+        REDIS_PASS: encryptor!.decrypt(process.env.REDIS_PASS || '<PASSWORD>'),
 
-    // bot logic
-    BOT_NAME: "bn_ticker_bot",
-    BOT_LOGIC_OPEN: process.env.BOT_LOGIC_OPEN === 'true',
-    TG_CHAT_ID: "-1002876070327",
-    TG_MESSAGE_THREAD_ID: "15",
-    TG_ASK_COIN_INTERVAL: 2,   // minute
+        RUST_QUEUE_KEY: 'perpx:queue:events',
+        NOTIFY_QUEUE_KEY: 'perpx:queue:notify',
 
-    // grpc
-    JWT_SECRET: process.env.JWT_SECRET || '0x0000001570BD7753dFCb42E1AD2E33D86eBA8870',
+        // strategy
+        EVENT_HANDLER_OPEN: process.env.EVENT_HANDLER_OPEN === 'true',
+        SUBS_CACHE_REFRESH_MS: parseInt(process.env.SUBS_CACHE_REFRESH_MS || String(20 * 1000)), // 20s
 
-    // mini app 
-    MINI_APP_URL: "https://perpxui.bitsflea.com"
+        // notify
+        NOTIFY_OPEN: process.env.NOTIFY_OPEN === 'true',
+        NOTIFY_CONCURRENCY_COUNT: parseInt(process.env.NOTIFY_CONCURRENCY_COUNT || String(5)),
+
+        // bot logic
+        BOT_NAME: "bn_ticker_bot",
+        BOT_LOGIC_OPEN: process.env.BOT_LOGIC_OPEN === 'true',
+        TG_CHAT_ID: "-1002876070327",
+        TG_MESSAGE_THREAD_ID: "15",
+        TG_ASK_COIN_INTERVAL: 2,   // minute
+
+        // grpc
+        JWT_SECRET: encryptor!.decrypt(process.env.JWT_SECRET || '0x0000001570BD7753dFCb42E1AD2E33D86eBA8870'),
+
+        // mini app 
+        MINI_APP_URL: "https://perpxui.bitsflea.com",
+
+        // twitter
+        TWITTER_USERNAME: encryptor!.decrypt(process.env.TWITTER_USERNAME || ''),
+        TWITTER_PASSWORD: encryptor!.decrypt(process.env.TWITTER_PASSWORD || ''),
+        TWITTER_EMAIL: encryptor!.decrypt(process.env.TWITTER_EMAIL || ''),
+    }
 }

@@ -1,8 +1,10 @@
 import { sleep } from "./utils/helper";
 import Redis from "ioredis";
-import { config } from "./config";
+import { getConfig } from "./config";
 import { sendAlert } from './notifiers/telegram-notifier';
 import { TGMessage } from "./utils/types";
+
+const config = getConfig()
 
 export async function notifyWorker(redis: Redis) {
     console.info(`[notify] starting...`);

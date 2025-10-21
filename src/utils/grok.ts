@@ -3,6 +3,9 @@ import fs from 'node:fs/promises';
 import { Cookie } from 'tough-cookie'
 import { ProxyAgent } from 'undici';
 import { cycleTLSFetch, cycleTLSExit } from './cycletls-fetch';
+import { getConfig } from "../config";
+
+const config = getConfig()
 
 const cookiesFilePath = './datas/cookies.json'
 async function checkFileExists(filePath: string) {
@@ -100,7 +103,7 @@ export async function login(cycle: boolean = false) {
             await scraper.setCookies(cookies)
         } else {
             try {
-                await scraper.login(process.env.TWITTER_USERNAME!, process.env.TWITTER_PASSWORD!, process.env.TWITTER_EMAIL)
+                await scraper.login(config.TWITTER_USERNAME, config.TWITTER_PASSWORD, config.TWITTER_EMAIL)
             } catch (e: any) {
                 if (e.message.includes('You are unable to access')) {
                     console.warn('X login failed, retrying with CycleTLS')

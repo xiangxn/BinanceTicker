@@ -1,9 +1,11 @@
 import TelegramBot from 'node-telegram-bot-api';
-import { config } from "./config";
+import { getConfig } from "./config";
 import { deleteMsg, sendAlert, sendMiniApp, isAdmin } from './notifiers/telegram-notifier';
 import { login, grokChat } from "./utils/grok";
 import mysql from "mysql2/promise";
 import { User } from './db/user';
+
+const config = getConfig()
 
 let lastAskTime = 0
 

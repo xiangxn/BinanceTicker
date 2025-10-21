@@ -2,7 +2,9 @@ import TelegramBot from 'node-telegram-bot-api';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { TGMessage } from '../utils/types';
 import mysql from "mysql2/promise";
-import { config } from "../config";
+import { getConfig } from "../config";
+
+const config = getConfig()
 
 let bot: TelegramBot;
 let DB: mysql.Pool

@@ -1,9 +1,10 @@
 import dotenv from 'dotenv'
 dotenv.config()
 
-import { config } from '../src/config';
+import { getConfig } from '../src/config';
 import { isValid } from '@tma.js/init-data-node';
 
+const config = getConfig()
 
 const ins:string = "<init data>"
 

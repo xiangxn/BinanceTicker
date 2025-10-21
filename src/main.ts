@@ -1,36 +1,26 @@
 import dotenv from 'dotenv'
 dotenv.config()
 
-import { fork, execSync } from 'child_process';
+import { initEncryptor } from "./config";
+initEncryptor()
+
+import { fork } from 'child_process';
 import path from 'path';
 
-import "./utils/console"
-import { config } from "./config";
-import { initTelegramBot } from './notifiers/telegram-notifier';
 import Redis from "ioredis";
 import mysql from "mysql2/promise";
+
+import "./utils/console"
+import { getConfig } from "./config";
+import { initTelegramBot } from './notifiers/telegram-notifier';
 import { notifyWorker } from "./notify";
 import { startDispatcherLoop } from "./dispatcher";
 import { onTGMessage } from './bot_logic';
 
-const mysqlPool = mysql.createPool({
-    host: config.MYSQL_HOST,
-    port: config.MYSQL_PORT,
-    user: config.MYSQL_USER,
-    password: config.MYSQL_PASS,
-    database: config.MYSQL_DB,
-    connectionLimit: 10,
-});
+const config = getConfig()
 
-const redis = new Redis({
-    host: config.REDIS_HOST,
-    port: config.REDIS_PORT,
-    username: config.REDIS_USER,
-    password: config.REDIS_PASS,
-});
-
-// ✅ 初始化 Telegram
-const bot = initTelegramBot(config.TG_API_KEY, mysqlPool, onTGMessage, config.PROXY);
+let mysqlPool: mysql.Pool
+let redis: Redis
 
 async function shutdown() {
     console.info("shutting down...");
@@ -65,14 +55,37 @@ process.on("SIGTERM", shutdown);
 let serverProcess: ReturnType<typeof fork> | null = null;
 async function main() {
     try {
+        // init mysql
+        mysqlPool = mysql.createPool({
+            host: config.MYSQL_HOST,
+            port: config.MYSQL_PORT,
+            user: config.MYSQL_USER,
+            password: config.MYSQL_PASS,
+            database: config.MYSQL_DB,
+            connectionLimit: 10,
+        });
+
+        // init redis
+        redis = new Redis({
+            host: config.REDIS_HOST,
+            port: config.REDIS_PORT,
+            username: config.REDIS_USER,
+            password: config.REDIS_PASS,
+        });
+
         // test connections
         await redis.ping()
         const conn = await mysqlPool.getConnection()
         conn.release()
 
+        // init Telegram
+        const bot = initTelegramBot(config.TG_API_KEY, mysqlPool, onTGMessage, config.PROXY);
+
         // start gRPC server
         const rpcfile = process.env.NODE_ENV === 'production' ? 'rpc/server.js' : 'rpc/server.ts'
-        serverProcess = fork(path.join(__dirname, rpcfile));
+        serverProcess = fork(path.join(__dirname, rpcfile), {
+            env: { CONFIG: JSON.stringify(config) }
+        });
         // 监听子进程退出事件
         serverProcess.on('exit', (code) => {
             console.info(`gRPC server process exited with code ${code}`);
@@ -99,4 +112,5 @@ async function main() {
         process.exit(1)
     }
 }
+
 main()

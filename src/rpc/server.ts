@@ -4,14 +4,15 @@ dotenv.config()
 import * as grpc from '@grpc/grpc-js';
 import * as jwt from 'jsonwebtoken';
 import "../utils/console"
-import { config } from "../config";
 import * as protoLoader from '@grpc/proto-loader';
 import mysql from "mysql2/promise";
 import { User } from '../db/user';
 import path from 'path';
 import { GetInvoicesResponse, GetStrategiesResponse, Invoice, ProfileResponse, Strategy } from './proto/perpx';
 import { isValid } from '@tma.js/init-data-node';
+import { getConfig } from '../config';
 
+const config = getConfig();
 
 // 初始化数据库
 const mysqlPool = mysql.createPool({

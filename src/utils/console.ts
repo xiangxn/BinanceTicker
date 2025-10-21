@@ -1,6 +1,8 @@
-import { config } from "../config"
+import { getConfig } from "../config"
 import { appendFile, mkdir } from "fs/promises"
 import { join } from "path"
+
+const config = getConfig()
 
 const originalConsole = { ...console };
 

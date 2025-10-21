@@ -415,6 +415,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/readline-sync@npm:^1":
+  version: 1.4.8
+  resolution: "@types/readline-sync@npm:1.4.8"
+  checksum: 10c0/08da90bbc4905f42eea2f7e03253f86b8060e93dbd427cc2ef5ebc0955248088c85e1638dd480ce28e2e576624979a81e12d1371d2c38e1796002ca8efbc719f
+  languageName: node
+  linkType: hard
+
 "@types/request@npm:*":
   version: 2.48.13
   resolution: "@types/request@npm:2.48.13"
@@ -2024,6 +2031,7 @@ __metadata:
     "@tma.js/init-data-node": "npm:^2.0.3"
     "@types/jsonwebtoken": "npm:^9"
     "@types/node-telegram-bot-api": "npm:^0"
+    "@types/readline-sync": "npm:^1"
     agent-twitter-client: "https:/github.com/xiangxn/agent-twitter-client.git"
     browser-headers: "npm:^0.4.1"
     cycletls: "npm:^2.0.5"
@@ -2034,6 +2042,7 @@ __metadata:
     jsonwebtoken: "npm:^9.0.2"
     mysql2: "npm:^3.15.1"
     node-telegram-bot-api: "npm:^0.66.0"
+    readline-sync: "npm:^1.4.10"
     ts-node: "npm:^10.9.2"
     ts-proto: "npm:^2.7.7"
     typescript: "npm:^5.9.2"
@@ -2128,6 +2137,13 @@ __metadata:
     string_decoder: "npm:~1.1.1"
     util-deprecate: "npm:~1.0.1"
   checksum: 10c0/7efdb01f3853bc35ac62ea25493567bf588773213f5f4a79f9c365e1ad13bab845ac0dae7bc946270dc40c3929483228415e92a3fc600cc7e4548992f41ee3fa
+  languageName: node
+  linkType: hard
+
+"readline-sync@npm:^1.4.10":
+  version: 1.4.10
+  resolution: "readline-sync@npm:1.4.10"
+  checksum: 10c0/0a4d0fe4ad501f8f005a3c9cbf3cc0ae6ca2ced93e9a1c7c46f226bdfcb6ef5d3f437ae7e9d2e1098ee13524a3739c830e4c8dbc7f543a693eecd293e41093a3
   languageName: node
   linkType: hard
 

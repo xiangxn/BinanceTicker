@@ -1,9 +1,11 @@
 import Redis from "ioredis";
 import mysql from "mysql2/promise";
 import { sleep } from "./utils/helper";
-import { config } from "./config";
+import { getConfig } from "./config";
 import { EventMessage, TGMessage } from "./utils/types";
 import { buildTGMessage, findMatchingSubs, loadUserStrategies } from "./strategy";
+
+const config = getConfig()
 
 export async function startDispatcherLoop(redis: Redis, mysqlPool: mysql.Pool) {
     console.info("[dispatcher] starting...");
