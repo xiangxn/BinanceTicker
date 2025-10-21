@@ -131,7 +131,7 @@ server.addService(grpcObj.perpx.PerpxService.service, {
     },
     updateStrategy: async (call: any, callback: any) => {
         // TODO:检查params与类型是否匹配
-        const { token, id, strategyType, symbol, period, params } = call.request;
+        let { token, id, strategyType, symbol, period, params } = call.request;
         try {
             const db = new User(mysqlPool)
             const decoded = jwt.verify(token, config.JWT_SECRET) as { user_id: string };
@@ -142,6 +142,9 @@ server.addService(grpcObj.perpx.PerpxService.service, {
                         callback({ code: grpc.status.INVALID_ARGUMENT, message: 'No permission to use wildcards' });
                         return
                     }
+                }
+                if (strategyType === "FundingRate") {
+                    period = "all"
                 }
                 const ok = await db.updateStrategy(id, strategyType, symbol, period, params)
                 if (!ok) {
@@ -158,7 +161,7 @@ server.addService(grpcObj.perpx.PerpxService.service, {
     },
     addStrategy: async (call: any, callback: any) => {
         // TODO:检查params与类型是否匹配
-        const { token, strategyType, symbol, period, params } = call.request;
+        let { token, strategyType, symbol, period, params } = call.request;
         try {
             const db = new User(mysqlPool)
             const decoded = jwt.verify(token, config.JWT_SECRET) as { user_id: string };
@@ -175,6 +178,9 @@ server.addService(grpcObj.perpx.PerpxService.service, {
                         callback({ code: grpc.status.INVALID_ARGUMENT, message: 'Max strategies reached' });
                         return
                     }
+                }
+                if (strategyType === "FundingRate") {
+                    period = "all"
                 }
                 const ok = await db.addStrategy(user.id, strategyType, symbol, period, params)
                 if (!ok) {
