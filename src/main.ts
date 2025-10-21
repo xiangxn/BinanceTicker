@@ -84,11 +84,11 @@ async function main() {
 
         // 根据事件匹配生成通知消息
         if (config.EVENT_HANDLER_OPEN) {
-            startDispatcherLoop(redis, mysqlPool).catch((e) => console.error("dispatcher crash", e))
+            startDispatcherLoop(redis.duplicate(), mysqlPool).catch((e) => console.error("dispatcher crash", e))
         }
         // 推送通知消息
         if (config.NOTIFY_OPEN) {
-            notifyWorker(redis).catch((e) => console.error("notify crash", e))
+            notifyWorker(redis.duplicate()).catch((e) => console.error("notify crash", e))
         }
         // 启动TG处理ask coin
         if (config.BOT_LOGIC_OPEN) {
