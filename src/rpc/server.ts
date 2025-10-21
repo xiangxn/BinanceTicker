@@ -132,17 +132,15 @@ server.addService(grpcObj.perpx.PerpxService.service, {
     updateStrategy: async (call: any, callback: any) => {
         // TODO:检查params与类型是否匹配
         let { token, id, strategyType, symbol, period, params } = call.request;
+        if (symbol.includes("*") || period.includes("*")) {
+            callback({ code: grpc.status.INVALID_ARGUMENT, message: 'No permission to use wildcards' });
+            return
+        }
         try {
             const db = new User(mysqlPool)
             const decoded = jwt.verify(token, config.JWT_SECRET) as { user_id: string };
             const user = await db.getUser(decoded.user_id)
             if (user) {
-                if (user.maxStrategies <= 1) {
-                    if (symbol.includes("*") || period.includes("*")) {
-                        callback({ code: grpc.status.INVALID_ARGUMENT, message: 'No permission to use wildcards' });
-                        return
-                    }
-                }
                 if (strategyType === "FundingRate") {
                     period = "all"
                 }
@@ -162,22 +160,19 @@ server.addService(grpcObj.perpx.PerpxService.service, {
     addStrategy: async (call: any, callback: any) => {
         // TODO:检查params与类型是否匹配
         let { token, strategyType, symbol, period, params } = call.request;
+        if (symbol.includes("*") || period.includes("*")) {
+            callback({ code: grpc.status.INVALID_ARGUMENT, message: 'No permission to use wildcards' });
+            return
+        }
         try {
             const db = new User(mysqlPool)
             const decoded = jwt.verify(token, config.JWT_SECRET) as { user_id: string };
             const user = await db.getUser(decoded.user_id)
             if (user) {
-                if (user.maxStrategies <= 1) {
-                    if (symbol.includes("*") || period.includes("*")) {
-                        callback({ code: grpc.status.INVALID_ARGUMENT, message: 'No permission to use wildcards' });
-                        return
-                    }
-                } else {
-                    const count = await db.getStrategyCount(user.id)
-                    if (count + 1 > user.maxStrategies) {
-                        callback({ code: grpc.status.INVALID_ARGUMENT, message: 'Max strategies reached' });
-                        return
-                    }
+                const count = await db.getStrategyCount(user.id)
+                if (count + 1 > user.maxStrategies) {
+                    callback({ code: grpc.status.INVALID_ARGUMENT, message: 'Max strategies reached' });
+                    return
                 }
                 if (strategyType === "FundingRate") {
                     period = "all"
