@@ -67,28 +67,16 @@ export function findMatchingSubs(event: EventMessage): UserStrategy[] {
 function matchingConsecutiveMove(event: EventMessage, symbolMap: Map<string, Map<string, UserStrategy[]>>): UserStrategy[] {
     const result: UserStrategy[] = [];
     // symbol matches
-    let periodMap = symbolMap.get(event.symbol);
-    if (!periodMap) {
-        // wildcard subscribers for this strategy (symbol = "*")
-        periodMap = symbolMap.get("*");
-    } else {
-        const map = symbolMap.get("*");
-        if (map && map.size > 0) {
-            periodMap = new Map([...periodMap, ...map]);
-        }
-    }
-    if (!periodMap) return result;
+    const arr0 = symbolMap.get(event.symbol)?.get(event.period) ?? [];
+    const arr1 = symbolMap.get("*")?.get(event.period) ?? [];
+    const strategies = [...arr0, ...arr1];
 
-    // period matches
-    const strategies = periodMap.get(event.period);
-    if (strategies) {
-        // params match
-        for (const strategy of strategies) {
-            const params = strategy.params as ConsecutiveMoveParams;
-            const value = event.value as ConsecutiveMoveValue;
-            if (value.count >= params.count && parseFloat(value.turnover) >= parseFloat(params.turnover)) {
-                result.push(strategy);
-            }
+    // params match
+    for (const strategy of strategies) {
+        const params = strategy.params as ConsecutiveMoveParams;
+        const value = event.value as ConsecutiveMoveValue;
+        if (value.count >= params.count && parseFloat(value.turnover) >= parseFloat(params.turnover)) {
+            result.push(strategy);
         }
     }
     return result;
@@ -97,28 +85,16 @@ function matchingConsecutiveMove(event: EventMessage, symbolMap: Map<string, Map
 function matchingVolatilitySpike(event: EventMessage, symbolMap: Map<string, Map<string, UserStrategy[]>>): UserStrategy[] {
     const result: UserStrategy[] = [];
     // symbol matches
-    let periodMap = symbolMap.get(event.symbol);
-    if (!periodMap) {
-        // wildcard subscribers for this strategy (symbol = "*")
-        periodMap = symbolMap.get("*");
-    } else {
-        const map = symbolMap.get("*");
-        if (map && map.size > 0) {
-            periodMap = new Map([...periodMap, ...map]);
-        }
-    }
-    if (!periodMap) return result;
+    const arr0 = symbolMap.get(event.symbol)?.get(event.period) ?? [];
+    const arr1 = symbolMap.get("*")?.get(event.period) ?? [];
+    const strategies = [...arr0, ...arr1];
 
-    // period matches
-    const strategies = periodMap.get(event.period);
-    if (strategies) {
-        // params match
-        for (const strategy of strategies) {
-            const params = strategy.params as VolatilitySpikeParams;
-            const value = event.value as VolatilitySpikeValue;
-            if (value.amplitude >= params.amplitudeMultiple * value.avg_amplitude && parseFloat(value.turnover) >= parseFloat(params.turnover) && value.volume >= params.volume) {
-                result.push(strategy);
-            }
+    // params match
+    for (const strategy of strategies) {
+        const params = strategy.params as VolatilitySpikeParams;
+        const value = event.value as VolatilitySpikeValue;
+        if (value.amplitude >= params.amplitudeMultiple * value.avg_amplitude && parseFloat(value.turnover) >= parseFloat(params.turnover) && value.volume >= params.volume) {
+            result.push(strategy);
         }
     }
     return result;
@@ -127,27 +103,16 @@ function matchingVolatilitySpike(event: EventMessage, symbolMap: Map<string, Map
 function matchingFundingRate(event: EventMessage, symbolMap: Map<string, Map<string, UserStrategy[]>>): UserStrategy[] {
     const result: UserStrategy[] = [];
     // symbol matches
-    let periodMap = symbolMap.get(event.symbol);
-    if (!periodMap) {
-        // wildcard subscribers for this strategy (symbol = "*")
-        periodMap = symbolMap.get("*");
-    } else {
-        const arr = symbolMap.get("*")?.get("all") ?? [];
-        const oArr = periodMap.get("all") ?? [];
-        periodMap.set("all", [...arr, ...oArr]);
-    }
-    if (!periodMap) return result;
+    const arr0 = symbolMap.get(event.symbol)?.get('all') ?? []; // funding rate 只支持all, 没有period分别
+    const arr1 = symbolMap.get("*")?.get('all') ?? [];
+    const strategies = [...arr0, ...arr1];
 
-    // period matches
-    const strategies = periodMap.get("all");    // funding rate 只支持all, 没有period分别
-    if (strategies) {
-        // params match
-        for (const strategy of strategies) {
-            const params = strategy.params as FundingRateParams;
-            const value = event.value as FundingRateValue;
-            if (Math.abs(parseFloat(value.funding_rate)) >= parseFloat(params.fundingRate)) {
-                result.push(strategy);
-            }
+    // params match
+    for (const strategy of strategies) {
+        const params = strategy.params as FundingRateParams;
+        const value = event.value as FundingRateValue;
+        if (Math.abs(parseFloat(value.funding_rate)) >= parseFloat(params.fundingRate)) {
+            result.push(strategy);
         }
     }
     return result;
