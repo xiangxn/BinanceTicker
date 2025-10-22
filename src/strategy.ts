@@ -132,10 +132,9 @@ function matchingFundingRate(event: EventMessage, symbolMap: Map<string, Map<str
         // wildcard subscribers for this strategy (symbol = "*")
         periodMap = symbolMap.get("*");
     } else {
-        const map = symbolMap.get("*");
-        if (map && map.size > 0) {
-            periodMap = new Map([...periodMap, ...map]);
-        }
+        const arr = symbolMap.get("*")?.get("all") ?? [];
+        const oArr = periodMap.get("all") ?? [];
+        periodMap.set("all", [...arr, ...oArr]);
     }
     if (!periodMap) return result;
 
@@ -185,4 +184,8 @@ export function buildTGMessage(strategy: UserStrategy, event: EventMessage): TGM
             break;
     }
     return msg;
+}
+
+export function getStrategyCache() {
+    return strategyCache
 }
